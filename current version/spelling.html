@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spelling - Smarty Pants</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Arial Rounded MT Bold', cursive, sans-serif;
+            background: linear-gradient(135deg, #2d5016 0%, #4a7c2c 50%, #356b1f 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 1.5em;
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #2d5016;
+            border: 3px solid #2d5016;
+            border-radius: 15px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.2s;
+            z-index: 100;
+        }
+
+        .back-button:hover {
+            background: #2d5016;
+            color: white;
+        }
+
+        .counter {
+            text-align: center;
+            padding: 20px;
+            font-size: 2.5em;
+            color: #fff;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(to bottom, rgba(255, 140, 60, 0.3), transparent);
+            border-bottom: 4px solid rgba(255, 140, 60, 0.5);
+        }
+
+        .game-container {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .left-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 60px 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border: 6px solid #ff8c3c;
+        }
+
+        .right-panel {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border: 6px solid #ff8c3c;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .spelling-prompt {
+            font-size: 3em;
+            color: #2d5016;
+            margin-bottom: 40px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .letter-boxes-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .letter-box {
+            width: 80px;
+            height: 80px;
+            font-size: 3em;
+            text-align: center;
+            border: 4px solid #4a7c2c;
+            border-radius: 15px;
+            font-family: inherit;
+            background: #fffef8;
+            color: #2d5016;
+            font-weight: bold;
+            text-transform: uppercase;
+            caret-color: transparent;
+        }
+
+        .letter-box:focus {
+            outline: none;
+            border-color: #ff8c3c;
+            box-shadow: 0 0 20px rgba(255, 140, 60, 0.5);
+        }
+
+        .letter-box.correct {
+            background: #d4edda;
+            border-color: #4a7c2c;
+        }
+
+        .letter-box.incorrect {
+            animation: shake 0.3s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .button-container {
+            display: flex;
+            gap: 20px;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .play-audio-btn {
+            font-size: 2em;
+            padding: 20px 50px;
+            background: linear-gradient(to bottom, #6a4c93, #8b6fb8);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            box-shadow: 0 6px 20px rgba(106, 76, 147, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .play-audio-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(106, 76, 147, 0.6);
+        }
+
+        .play-audio-btn:active {
+            transform: translateY(0);
+        }
+
+        .feedback {
+            font-size: 3em;
+            font-weight: bold;
+            margin-top: 30px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .feedback.correct {
+            color: #4a7c2c;
+            animation: celebrate 0.5s ease-out;
+        }
+
+        .feedback.incorrect {
+            color: #c44536;
+        }
+
+        .write-prompt {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .write-prompt.show {
+            display: flex;
+        }
+
+        .write-message {
+            font-size: 3em;
+            color: #2d5016;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .done-btn {
+            font-size: 2.5em;
+            padding: 20px 60px;
+            background: linear-gradient(to bottom, #4a7c2c, #356b1f);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            box-shadow: 0 6px 20px rgba(74, 124, 44, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .done-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(74, 124, 44, 0.6);
+        }
+
+        .done-btn:active {
+            transform: translateY(0);
+        }
+
+        @keyframes celebrate {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .image-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #reveal-image {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 15px;
+            display: block;
+        }
+
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            pointer-events: none;
+        }
+
+        .grid-cell {
+            background: #000000;
+            border: 1px solid rgba(255, 140, 60, 0.3);
+            transition: opacity 0.8s ease-out;
+        }
+
+        .grid-cell.revealed {
+            opacity: 0;
+        }
+
+        .celebration-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff8c3c 0%, #ff6b1a 50%, #ffa05c 100%);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .celebration-screen.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .celebration-content {
+            text-align: center;
+            color: white;
+            text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .celebration-content h1 {
+            font-size: 6em;
+            margin-bottom: 30px;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .celebration-content p {
+            font-size: 3em;
+            margin-bottom: 50px;
+        }
+
+        .celebration-video {
+            max-width: 80%;
+            max-height: 400px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            border: 4px solid white;
+        }
+
+        #play-again-btn {
+            font-size: 2.5em;
+            padding: 25px 70px;
+            background: white;
+            color: #ff6b1a;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s;
+        }
+
+        #play-again-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Tablet responsiveness */
+        @media (max-width: 1024px) {
+            .game-container {
+                flex-direction: column;
+                padding: 15px;
+            }
+
+            .counter {
+                font-size: 2em;
+                padding: 15px;
+            }
+
+            .spelling-prompt {
+                font-size: 2.5em;
+            }
+
+            .letter-box {
+                width: 60px;
+                height: 60px;
+                font-size: 2.5em;
+            }
+
+            .play-audio-btn {
+                font-size: 1.8em;
+                padding: 15px 40px;
+            }
+
+            .feedback {
+                font-size: 2.5em;
+            }
+
+            .left-panel, .right-panel {
+                padding: 30px;
+            }
+
+            .write-message {
+                font-size: 2.5em;
+            }
+
+            .done-btn {
+                font-size: 2em;
+                padding: 15px 50px;
+            }
+
+            .celebration-video {
+                max-width: 90%;
+                max-height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-button">← Back</a>
+
+    <div class="counter" id="counter">0 out of 25</div>
+
+    <div class="game-container">
+        <div class="left-panel">
+            <div class="spelling-prompt">Spell the word:</div>
+            <div class="letter-boxes-container" id="letter-boxes"></div>
+            <div class="button-container">
+                <button class="play-audio-btn" id="play-audio-btn">🔊 Play Word Again</button>
+            </div>
+            <div class="feedback" id="feedback"></div>
+            <div class="write-prompt" id="write-prompt">
+                <p class="write-message">Now write out the word</p>
+                <button class="done-btn" id="done-btn">I'm Done</button>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="image-container">
+                <img id="reveal-image" src="" alt="Mystery Image">
+                <div class="grid-overlay" id="grid-overlay"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="celebration-screen" id="celebration">
+        <div class="celebration-content">
+            <h1>🎉 SPELLING STAR! 🎉</h1>
+            <p>You're a fantastic speller!</p>
+            <video id="celebration-video" class="celebration-video" autoplay loop muted playsinline>
+                <source src="" type="video/mp4">
+            </video>
+            <button id="play-again-btn">GO AGAIN</button>
+        </div>
+    </div>
+
+    <div class="celebration-screen" id="start-screen">
+        <div class="celebration-content">
+            <h1>🎯 Ready to Spell? 🎯</h1>
+            <p>Click start when you're ready!</p>
+            <button id="start-btn" style="font-size: 2.5em; padding: 25px 70px; background: white; color: #ff6b1a; border: none; border-radius: 20px; cursor: pointer; font-family: inherit; font-weight: bold; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);">START</button>
+        </div>
+    </div>
+
+    <audio id="word-audio" preload="auto"></audio>
+    <audio id="success-audio" src="tigerroar.mp3" preload="auto"></audio>
+
+    <script>
+        // Game state
+        let correctWords = 0;
+        let currentWord = null;
+        let usedWords = [];
+        let revealedCells = [];
+        let allCells = [];
+        let letterInputs = [];
+        let currentLetterIndex = 0;
+        
+        // Word list - 172 sight words (removed single-letter words)
+        const wordList = ["and", "away", "big", "blue", "can", "come", "down", "find", "for", "funny", "go", "help", "here", "in", "is", "it", "jump", "little", "look", "make", "me", "my", "not", "one", "play", "red", "run", "said", "see", "the", "three", "to", "two", "up", "we", "where", "yellow", "you", "yes", "am", "are", "at", "be", "but", "did", "do", "eat", "four", "get", "good", "have", "he", "into", "like", "must", "new", "no", "now", "on", "out", "please", "pretty", "ride", "she", "so", "soon", "that", "there", "they", "this", "too", "under", "want", "was", "well", "what", "who", "will", "with", "all", "an", "as", "ask", "by", "came", "could", "day", "every", "fly", "from", "give", "going", "had", "has", "her", "him", "his", "how", "just", "know", "let", "live", "may", "of", "old", "once", "open", "over", "put", "round", "some", "stop", "take", "thank", "them", "then", "think", "walk", "when", "why", "wish", "would", "your", "after", "again", "any", "because", "been", "before", "best", "both", "bring", "carry", "clean", "cold", "done", "drink", "eight", "fall", "far", "full", "got", "grow", "hold", "hot", "hurt", "if", "keep", "kind", "laugh", "light", "long", "much", "myself", "never", "only", "own", "pick", "seven", "shall", "show", "six", "small", "start", "ten", "today", "together", "try", "use", "warm", "which", "write"];
+
+        // Image and video arrays
+        const images = [
+            'Pictures/image1.jpg',
+            'Pictures/image2.jpg',
+            'Pictures/image3.jpg',
+            'Pictures/image4.jpg',
+            'Pictures/image5.jpg'
+        ];
+
+        const videos = [
+            'Videos/video1.mp4',
+            'Videos/video2.mp4',
+            'Videos/video3.mp4'
+        ];
+
+        // Select random image and video for this session
+        const selectedImage = images[Math.floor(Math.random() * images.length)];
+        const selectedVideo = videos[Math.floor(Math.random() * videos.length)];
+
+        // DOM elements
+        const counterEl = document.getElementById('counter');
+        const letterBoxesContainer = document.getElementById('letter-boxes');
+        const feedbackEl = document.getElementById('feedback');
+        const gridOverlay = document.getElementById('grid-overlay');
+        const celebrationScreen = document.getElementById('celebration');
+        const playAgainBtn = document.getElementById('play-again-btn');
+        const playAudioBtn = document.getElementById('play-audio-btn');
+        const wordAudio = document.getElementById('word-audio');
+        const revealImage = document.getElementById('reveal-image');
+        const celebrationVideo = document.getElementById('celebration-video');
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const writePrompt = document.getElementById('write-prompt');
+        const doneBtn = document.getElementById('done-btn');
+        const successAudio = document.getElementById('success-audio');
+
+        // Set selected image and video
+        revealImage.src = selectedImage;
+        celebrationVideo.querySelector('source').src = selectedVideo;
+
+        // Show start screen on load
+        startScreen.classList.add('show');
+
+        // Start button click
+        startBtn.addEventListener('click', () => {
+            startScreen.classList.remove('show');
+            // Initialize and start the game
+            initializeGrid();
+            loadNewWord();
+            updateCounter();
+        });
+
+        // Initialize grid overlay (5x5 = 25 cells)
+        function initializeGrid() {
+            gridOverlay.innerHTML = '';
+            allCells = [];
+            for (let i = 0; i < 25; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                cell.dataset.index = i;
+                gridOverlay.appendChild(cell);
+                allCells.push(cell);
+            }
+        }
+
+        // Select random word
+        function selectRandomWord() {
+            const availableWords = wordList.filter(w => !usedWords.includes(w));
+            if (availableWords.length === 0) {
+                usedWords = [];
+                return wordList[Math.floor(Math.random() * wordList.length)];
+            }
+            return availableWords[Math.floor(Math.random() * availableWords.length)];
+        }
+
+        // Create letter input boxes
+        function createLetterBoxes(wordLength) {
+            letterBoxesContainer.innerHTML = '';
+            letterInputs = [];
+            currentLetterIndex = 0;
+
+            for (let i = 0; i < wordLength; i++) {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.maxLength = 1;
+                input.className = 'letter-box';
+                input.dataset.index = i;
+                
+                input.addEventListener('input', (e) => handleLetterInput(e, i));
+                input.addEventListener('keydown', (e) => handleKeyDown(e, i));
+                
+                letterBoxesContainer.appendChild(input);
+                letterInputs.push(input);
+            }
+
+            // Focus first input
+            letterInputs[0].focus();
+        }
+
+        // Handle letter input
+        function handleLetterInput(e, index) {
+            const input = e.target;
+            const letter = input.value.toLowerCase();
+
+            if (letter === '') return;
+
+            // Check if letter is correct
+            if (letter === currentWord[index]) {
+                input.classList.add('correct');
+                input.disabled = true;
+                
+                // Move to next box
+                if (index < letterInputs.length - 1) {
+                    letterInputs[index + 1].focus();
+                    currentLetterIndex = index + 1;
+                } else {
+                    // Word complete!
+                    checkWord();
+                }
+            } else {
+                // Incorrect letter
+                input.classList.add('incorrect');
+                
+                setTimeout(() => {
+                    input.value = '';
+                    input.classList.remove('incorrect');
+                    input.focus();
+                }, 500);
+            }
+        }
+
+        // Handle keyboard navigation
+        function handleKeyDown(e, index) {
+            if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
+                // Move to previous box on backspace if current is empty
+                letterInputs[index - 1].focus();
+            }
+        }
+
+        // Check if word is complete
+        function checkWord() {
+            const enteredWord = letterInputs.map(input => input.value.toLowerCase()).join('');
+            
+            if (enteredWord === currentWord) {
+                // Correct!
+                feedbackEl.textContent = '✓ Perfect!';
+                feedbackEl.className = 'feedback correct';
+
+                // Play tiger roar
+                successAudio.currentTime = 0;
+                successAudio.play().catch(e => console.log('Audio play failed:', e));
+
+                // Update progress
+                correctWords++;
+                updateCounter();
+                revealRandomCell();
+
+                // Show write prompt after brief delay
+                setTimeout(() => {
+                    feedbackEl.textContent = '';
+                    writePrompt.classList.add('show');
+                }, 1500);
+            }
+        }
+
+        // Load new word
+        function loadNewWord() {
+            currentWord = selectRandomWord();
+            usedWords.push(currentWord);
+            
+            createLetterBoxes(currentWord.length);
+            feedbackEl.textContent = '';
+            writePrompt.classList.remove('show');
+            
+            // Build audio path from word
+            const audioPath = `Audio/${currentWord}.m4a`;
+            wordAudio.src = audioPath;
+            
+            // Try to play audio, with error handling
+            wordAudio.play()
+                .then(() => {
+                    console.log('Audio playing:', audioPath);
+                })
+                .catch(e => {
+                    console.log('Audio autoplay blocked or failed:', e);
+                    // Show message to click Play Word button
+                    feedbackEl.textContent = '👆 Click "Play Word Again" to hear the word';
+                    feedbackEl.className = 'feedback';
+                });
+        }
+
+        // Play audio button
+        playAudioBtn.addEventListener('click', () => {
+            wordAudio.play()
+                .then(() => {
+                    console.log('Audio played manually');
+                    feedbackEl.textContent = '';
+                })
+                .catch(e => {
+                    console.log('Audio play error:', e);
+                    feedbackEl.textContent = 'Audio error - check console';
+                    feedbackEl.className = 'feedback incorrect';
+                });
+        });
+
+        // Update counter display
+        function updateCounter() {
+            counterEl.textContent = `${correctWords} out of 25`;
+        }
+
+        // Reveal random grid cell
+        function revealRandomCell() {
+            const unrevealedCells = allCells.filter(cell => !cell.classList.contains('revealed'));
+            if (unrevealedCells.length > 0) {
+                const randomIndex = Math.floor(Math.random() * unrevealedCells.length);
+                unrevealedCells[randomIndex].classList.add('revealed');
+            }
+        }
+
+        // Reset game
+        function resetGame() {
+            correctWords = 0;
+            usedWords = [];
+            revealedCells = [];
+            updateCounter();
+            initializeGrid();
+            loadNewWord();
+            celebrationScreen.classList.remove('show');
+        }
+
+        // Event listeners
+        playAgainBtn.addEventListener('click', resetGame);
+
+        doneBtn.addEventListener('click', () => {
+            // Hide write prompt
+            writePrompt.classList.remove('show');
+
+            // Check if session is complete
+            if (correctWords >= 25) {
+                celebrationScreen.classList.add('show');
+            } else {
+                // Load next word
+                loadNewWord();
+            }
+        });
+    </script>
+</body>
+</html>

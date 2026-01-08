@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Addition - Smarty Pants</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Arial Rounded MT Bold', cursive, sans-serif;
+            background: linear-gradient(135deg, #2d5016 0%, #4a7c2c 50%, #356b1f 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        .timer-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            color: #2d5016;
+            font-weight: bold;
+            z-index: 100;
+        }
+
+        #timer-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .timer-display {
+            position: absolute;
+            top: 70px;
+            right: 20px;
+            font-size: 2em;
+            color: #fff;
+            background: rgba(45, 80, 22, 0.8);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 100;
+        }
+
+        .timer-display.visible {
+            display: block;
+        }
+
+        .counter {
+            text-align: center;
+            padding: 20px;
+            font-size: 2.5em;
+            color: #fff;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(to bottom, rgba(255, 140, 60, 0.3), transparent);
+            border-bottom: 4px solid rgba(255, 140, 60, 0.5);
+        }
+
+        .game-container {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .left-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 60px 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border: 6px solid #ff8c3c;
+        }
+
+        .right-panel {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border: 6px solid #ff8c3c;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .problem-display {
+            font-size: 6em;
+            color: #2d5016;
+            margin-bottom: 40px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(255, 140, 60, 0.3);
+        }
+
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            width: 100%;
+        }
+
+        #answer-input {
+            font-size: 4em;
+            width: 200px;
+            text-align: center;
+            padding: 20px;
+            border: 4px solid #4a7c2c;
+            border-radius: 15px;
+            font-family: inherit;
+            background: #fffef8;
+            color: #2d5016;
+            font-weight: bold;
+        }
+
+        #answer-input:focus {
+            outline: none;
+            border-color: #ff8c3c;
+            box-shadow: 0 0 20px rgba(255, 140, 60, 0.5);
+        }
+
+        #submit-btn {
+            font-size: 2.5em;
+            padding: 20px 60px;
+            background: linear-gradient(to bottom, #ff8c3c, #ff6b1a);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            box-shadow: 0 6px 20px rgba(255, 107, 26, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        #submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 26, 0.6);
+        }
+
+        #submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .feedback {
+            font-size: 4em;
+            font-weight: bold;
+            margin-top: 30px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feedback.correct {
+            color: #ff8c3c;
+            animation: roar 0.5s ease-out;
+        }
+
+        .feedback.incorrect {
+            color: #c44536;
+        }
+
+        @keyframes roar {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .image-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #reveal-image {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 15px;
+            display: block;
+        }
+
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            pointer-events: none;
+        }
+
+        .grid-cell {
+            background: #000000;
+            border: 1px solid rgba(255, 140, 60, 0.3);
+            transition: opacity 0.8s ease-out;
+        }
+
+        .grid-cell.revealed {
+            opacity: 0;
+        }
+
+        .celebration-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff8c3c 0%, #ff6b1a 50%, #ffa05c 100%);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .celebration-screen.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .celebration-content {
+            text-align: center;
+            color: white;
+            text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .celebration-content h1 {
+            font-size: 6em;
+            margin-bottom: 30px;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .celebration-content p {
+            font-size: 3em;
+            margin-bottom: 50px;
+        }
+
+        .celebration-video {
+            max-width: 80%;
+            max-height: 400px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            border: 4px solid white;
+        }
+
+        #continue-btn {
+            font-size: 2.5em;
+            padding: 25px 70px;
+            background: white;
+            color: #ff6b1a;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s;
+        }
+
+        #continue-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .badge-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #4a7c2c 0%, #356b1f 50%, #2d5016 100%);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .badge-screen.show {
+            display: flex;
+        }
+
+        .badge-content {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 40px;
+            padding: 50px 60px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+            border: 8px solid #ff8c3c;
+            text-align: center;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .badge-content h1 {
+            font-size: 4em;
+            color: #ff8c3c;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+            text-align: left;
+        }
+
+        .stat-item {
+            background: #f0f0f0;
+            padding: 20px;
+            border-radius: 15px;
+            border: 3px solid #ff8c3c;
+        }
+
+        .stat-label {
+            font-size: 1.3em;
+            color: #2d5016;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            color: #ff8c3c;
+            font-weight: bold;
+        }
+
+        .badges-container {
+            margin: 40px 0;
+        }
+
+        .badges-container h2 {
+            font-size: 2.5em;
+            color: #2d5016;
+            margin-bottom: 30px;
+        }
+
+        .badges-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 15px;
+        }
+
+        .badge-icon {
+            font-size: 3em;
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        #play-again-btn {
+            font-size: 2.5em;
+            padding: 25px 70px;
+            background: linear-gradient(to bottom, #ff8c3c, #ff6b1a);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            box-shadow: 0 8px 30px rgba(255, 107, 26, 0.5);
+            transition: transform 0.2s;
+        }
+
+        #play-again-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 1.3em;
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #2d5016;
+            border: 3px solid #2d5016;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.2s;
+            z-index: 100;
+        }
+
+        .back-button:hover {
+            background: #2d5016;
+            color: white;
+        }
+
+        /* Tablet responsiveness */
+        @media (max-width: 1024px) {
+            .game-container {
+                flex-direction: column;
+                padding: 15px;
+            }
+
+            .counter {
+                font-size: 2em;
+                padding: 15px;
+            }
+
+            .problem-display {
+                font-size: 4em;
+            }
+
+            #answer-input {
+                font-size: 3em;
+                width: 150px;
+            }
+
+            #submit-btn {
+                font-size: 2em;
+                padding: 15px 40px;
+            }
+
+            .feedback {
+                font-size: 3em;
+            }
+
+            .left-panel, .right-panel {
+                padding: 30px;
+            }
+
+            .celebration-video {
+                max-width: 90%;
+                max-height: 300px;
+            }
+
+            .badge-content h1 {
+                font-size: 3em;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="math-selection.html" class="back-button">← Back</a>
+
+    <div class="timer-toggle">
+        <input type="checkbox" id="timer-checkbox">
+        <label for="timer-checkbox">Timer</label>
+    </div>
+
+    <div class="timer-display" id="timer-display">0:00</div>
+
+    <div class="counter" id="counter">0 out of 25</div>
+
+    <div class="game-container">
+        <div class="left-panel">
+            <div class="problem-display" id="problem">5 + 3</div>
+            <div class="input-section">
+                <input type="number" id="answer-input" min="0" max="40" autocomplete="off">
+                <button id="submit-btn">SUBMIT</button>
+            </div>
+            <div class="feedback" id="feedback"></div>
+        </div>
+
+        <div class="right-panel">
+            <div class="image-container">
+                <img id="reveal-image" src="" alt="Mystery Image">
+                <div class="grid-overlay" id="grid-overlay"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="celebration-screen" id="celebration">
+        <div class="celebration-content">
+            <h1>🎉 AMAZING! 🎉</h1>
+            <p>You revealed the mystery image!</p>
+            <video id="celebration-video" class="celebration-video" autoplay loop muted playsinline>
+                <source src="" type="video/mp4">
+            </video>
+            <button id="continue-btn">Continue</button>
+        </div>
+    </div>
+
+    <div class="badge-screen" id="badge-screen">
+        <div class="badge-content">
+            <h1>🏆 Session Complete! 🏆</h1>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-label">Session Time</div>
+                    <div class="stat-value" id="session-time">0:00</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Session Accuracy</div>
+                    <div class="stat-value" id="session-accuracy">100%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Best Time</div>
+                    <div class="stat-value" id="best-time">--</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Best Accuracy</div>
+                    <div class="stat-value" id="best-accuracy">--</div>
+                </div>
+            </div>
+
+            <div class="badges-container">
+                <h2>Total Wins</h2>
+                <div class="badges-grid" id="badges-grid"></div>
+            </div>
+
+            <button id="play-again-btn">Play Again</button>
+        </div>
+    </div>
+
+    <audio id="success-sound" src="tigerroar.mp3" preload="auto"></audio>
+
+    <script>
+        // Game state
+        let correctAnswers = 0;
+        let totalAttempts = 0;
+        let currentProblem = {};
+        let allCells = [];
+        let startTime = null;
+        let timerInterval = null;
+        let sessionTime = 0;
+
+        // Placeholder images and videos (will be randomly selected)
+        const images = [
+            'Pictures/image1.jpg',
+            'Pictures/image2.jpg',
+            'Pictures/image3.jpg',
+            'Pictures/image4.jpg',
+            'Pictures/image5.jpg'
+        ];
+
+        const videos = [
+            'Videos/video1.mp4',
+            'Videos/video2.mp4',
+            'Videos/video3.mp4'
+        ];
+
+        // Select random image and video for this session
+        const selectedImage = images[Math.floor(Math.random() * images.length)];
+        const selectedVideo = videos[Math.floor(Math.random() * videos.length)];
+
+        // DOM elements
+        const counterEl = document.getElementById('counter');
+        const problemEl = document.getElementById('problem');
+        const answerInput = document.getElementById('answer-input');
+        const submitBtn = document.getElementById('submit-btn');
+        const feedbackEl = document.getElementById('feedback');
+        const gridOverlay = document.getElementById('grid-overlay');
+        const celebrationScreen = document.getElementById('celebration');
+        const badgeScreen = document.getElementById('badge-screen');
+        const playAgainBtn = document.getElementById('play-again-btn');
+        const continueBtn = document.getElementById('continue-btn');
+        const successSound = document.getElementById('success-sound');
+        const timerCheckbox = document.getElementById('timer-checkbox');
+        const timerDisplay = document.getElementById('timer-display');
+        const revealImage = document.getElementById('reveal-image');
+        const celebrationVideo = document.getElementById('celebration-video');
+
+        // Set selected image and video
+        revealImage.src = selectedImage;
+        celebrationVideo.querySelector('source').src = selectedVideo;
+        celebrationVideo.load();
+
+        // Timer functions
+        function startTimer() {
+            if (!startTime) {
+                startTime = Date.now();
+                timerInterval = setInterval(updateTimer, 1000);
+            }
+        }
+
+        function updateTimer() {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            timerDisplay.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            sessionTime = elapsed;
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        // Timer toggle
+        timerCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                timerDisplay.classList.add('visible');
+                startTimer();
+            } else {
+                timerDisplay.classList.remove('visible');
+            }
+        });
+
+        // Initialize grid overlay
+        function initializeGrid() {
+            gridOverlay.innerHTML = '';
+            allCells = [];
+            for (let i = 0; i < 25; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                cell.dataset.index = i;
+                gridOverlay.appendChild(cell);
+                allCells.push(cell);
+            }
+        }
+
+        // Generate random addition problem
+        function generateProblem() {
+            const num1 = Math.floor(Math.random() * 20) + 1; // 1-20
+            const num2 = Math.floor(Math.random() * 20) + 1; // 1-20
+            const answer = num1 + num2;
+
+            currentProblem = {
+                num1: num1,
+                num2: num2,
+                answer: answer
+            };
+
+            problemEl.textContent = `${num1} + ${num2}`;
+            answerInput.value = '';
+            feedbackEl.textContent = '';
+            answerInput.focus();
+        }
+
+        // Update counter display
+        function updateCounter() {
+            counterEl.textContent = `${correctAnswers} out of 25`;
+        }
+
+        // Reveal random grid cell
+        function revealRandomCell() {
+            const unrevealedCells = allCells.filter(cell => !cell.classList.contains('revealed'));
+            if (unrevealedCells.length > 0) {
+                const randomIndex = Math.floor(Math.random() * unrevealedCells.length);
+                unrevealedCells[randomIndex].classList.add('revealed');
+            }
+        }
+
+        // Handle answer submission
+        function checkAnswer() {
+            const userAnswer = parseInt(answerInput.value);
+
+            if (isNaN(userAnswer)) {
+                return;
+            }
+
+            // Start timer on first attempt
+            if (totalAttempts === 0 && timerCheckbox.checked) {
+                startTimer();
+            }
+
+            totalAttempts++;
+
+            if (userAnswer === currentProblem.answer) {
+                // Correct answer
+                feedbackEl.textContent = 'AWESOME!';
+                feedbackEl.className = 'feedback correct';
+                
+                // Play success sound
+                successSound.currentTime = 0;
+                successSound.play().catch(e => console.log('Audio play failed:', e));
+
+                // Update progress
+                correctAnswers++;
+                updateCounter();
+                revealRandomCell();
+
+                // Disable input temporarily
+                answerInput.disabled = true;
+                submitBtn.disabled = true;
+
+                // Check if game is complete
+                if (correctAnswers >= 25) {
+                    stopTimer();
+                    setTimeout(() => {
+                        celebrationScreen.classList.add('show');
+                    }, 2000);
+                } else {
+                    // Generate new problem after 3 seconds
+                    setTimeout(() => {
+                        generateProblem();
+                        answerInput.disabled = false;
+                        submitBtn.disabled = false;
+                    }, 3000);
+                }
+            } else {
+                // Incorrect answer
+                feedbackEl.textContent = 'Try Again!';
+                feedbackEl.className = 'feedback incorrect';
+                answerInput.value = '';
+                answerInput.focus();
+            }
+        }
+
+        // Load stats from localStorage
+        function loadStats() {
+            const stats = JSON.parse(localStorage.getItem('additionStats') || '{}');
+            return {
+                totalWins: stats.totalWins || 0,
+                bestTime: stats.bestTime || null,
+                bestAccuracy: stats.bestAccuracy || null
+            };
+        }
+
+        // Save stats to localStorage
+        function saveStats(stats) {
+            localStorage.setItem('additionStats', JSON.stringify(stats));
+        }
+
+        // Show badge screen
+        function showBadgeScreen() {
+            const accuracy = ((correctAnswers / totalAttempts) * 100).toFixed(1);
+            const stats = loadStats();
+
+            // Update total wins
+            stats.totalWins++;
+
+            // Update best time (if timer was used)
+            if (timerCheckbox.checked) {
+                if (!stats.bestTime || sessionTime < stats.bestTime) {
+                    stats.bestTime = sessionTime;
+                }
+            }
+
+            // Update best accuracy
+            const accuracyNum = parseFloat(accuracy);
+            if (!stats.bestAccuracy || accuracyNum > stats.bestAccuracy) {
+                stats.bestAccuracy = accuracyNum;
+            }
+
+            // Save updated stats
+            saveStats(stats);
+
+            // Display session stats
+            const minutes = Math.floor(sessionTime / 60);
+            const seconds = sessionTime % 60;
+            document.getElementById('session-time').textContent = 
+                timerCheckbox.checked ? `${minutes}:${seconds.toString().padStart(2, '0')}` : 'Not tracked';
+            document.getElementById('session-accuracy').textContent = `${accuracy}%`;
+
+            // Display best stats
+            if (stats.bestTime) {
+                const bestMin = Math.floor(stats.bestTime / 60);
+                const bestSec = stats.bestTime % 60;
+                document.getElementById('best-time').textContent = `${bestMin}:${bestSec.toString().padStart(2, '0')}`;
+            } else {
+                document.getElementById('best-time').textContent = '--';
+            }
+
+            if (stats.bestAccuracy) {
+                document.getElementById('best-accuracy').textContent = `${stats.bestAccuracy}%`;
+            } else {
+                document.getElementById('best-accuracy').textContent = '--';
+            }
+
+            // Display win badges
+            const badgesGrid = document.getElementById('badges-grid');
+            badgesGrid.innerHTML = '';
+            for (let i = 0; i < stats.totalWins; i++) {
+                const badge = document.createElement('div');
+                badge.className = 'badge-icon';
+                badge.textContent = '⭐';
+                badge.style.animationDelay = `${i * 0.05}s`;
+                badgesGrid.appendChild(badge);
+            }
+
+            badgeScreen.classList.add('show');
+        }
+
+        // Reset game
+        function resetGame() {
+            correctAnswers = 0;
+            totalAttempts = 0;
+            startTime = null;
+            sessionTime = 0;
+            stopTimer();
+            timerDisplay.textContent = '0:00';
+            updateCounter();
+            initializeGrid();
+            generateProblem();
+            celebrationScreen.classList.remove('show');
+            badgeScreen.classList.remove('show');
+            answerInput.disabled = false;
+            submitBtn.disabled = false;
+
+            // Select new random image and video
+            const newImage = images[Math.floor(Math.random() * images.length)];
+            const newVideo = videos[Math.floor(Math.random() * videos.length)];
+            revealImage.src = newImage;
+            celebrationVideo.querySelector('source').src = newVideo;
+            celebrationVideo.load();
+        }
+
+        // Event listeners
+        submitBtn.addEventListener('click', checkAnswer);
+
+        answerInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        continueBtn.addEventListener('click', () => {
+            celebrationScreen.classList.remove('show');
+            showBadgeScreen();
+        });
+
+        playAgainBtn.addEventListener('click', resetGame);
+
+        // Initialize game
+        initializeGrid();
+        generateProblem();
+        updateCounter();
+    </script>
+</body>
+</html>
