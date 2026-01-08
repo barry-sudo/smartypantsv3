@@ -1,25 +1,29 @@
+import { supabase } from '../supabase/client';
 import type { User } from '@/types';
 
 /**
  * Get current authenticated user
- * For MVP: Returns hardcoded test user without auth
- * Note: RLS policies allow NULL auth.uid() for MVP development
+ * For MVP: Queries the first user from database (single-user app)
+ * Note: RLS is disabled for MVP, allowing unauthenticated queries
  * Future: Implement real auth flow with supabase.auth.signIn()
  */
 export async function getCurrentUser(): Promise<User | null> {
-  // For MVP: Return hardcoded test user object
-  // This works because RLS policies have "OR auth.uid() IS NULL"
-  // which allows unauthenticated access during development
+  // For MVP: Query the first user from database
+  // This ensures we use whatever user actually exists in production
+  // Avoids hardcoded ID mismatches between code and database
 
-  const testUser: User = {
-    id: '00000000-0000-0000-0000-000000000000',
-    name: 'Test Child',
-    photo_url: 'https://kwvqxvyklsrkfgykmtfu.supabase.co/storage/v1/object/public/prizes/current-goal.jpg',
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  };
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .limit(1)
+    .single();
 
-  return testUser;
+  if (error) {
+    console.error('Failed to get user from database:', error);
+    return null;
+  }
+
+  return data;
 }
 
 /**
