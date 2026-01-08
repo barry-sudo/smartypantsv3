@@ -1,4 +1,3 @@
-import { supabase } from '../supabase/client';
 import type { User } from '@/types';
 
 /**
