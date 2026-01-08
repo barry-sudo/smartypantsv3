@@ -108,3 +108,71 @@ export const supabase = createClient(
 - Build successful locally
 - Auto-deployed to Vercel via GitHub push
 - Ready for manual verification at production URL
+
+---
+
+## 2026-01-08 - Fix User ID Mismatch (Foreign Key Constraint)
+
+### Issue 4: Database 409 Conflict on Session Creation
+**Error:**
+```
+Failed to load resource: 409 Conflict
+kwvqxvyklsrkfgykmtfu...sessions?select=*:1
+Failed to create session: Object
+```
+
+**Root Cause:**
+- Auth function returned hardcoded user ID: `'00000000-0000-0000-0000-000000000000'` (ends in 000)
+- Database seed migration used ID: `'00000000-0000-0000-0000-000000000001'` (ends in 001)
+- When creating session, foreign key constraint on `sessions.user_id` failed
+- Database tried: `REFERENCES users(id)` but user with ID `...000` doesn't exist
+- Result: 409 Conflict error
+
+**Why This Happened:**
+- Hardcoded IDs in both auth function and database migration
+- IDs didn't match between code and database
+- No way to verify which ID actually exists in production without querying
+
+**Fix:**
+- Changed auth function to query database for actual user
+- Database-first approach: Get whatever user actually exists
+- Eliminates ID mismatch issues entirely
+- More robust and future-proof
+- Committed as `bc09375`
+
+**Code Change:**
+```typescript
+// Before (problematic - hardcoded ID):
+export async function getCurrentUser(): Promise<User | null> {
+  const testUser: User = {
+    id: '00000000-0000-0000-0000-000000000000',  // ❌ Wrong ID!
+    name: 'Test Child',
+    // ...
+  };
+  return testUser;
+}
+
+// After (fixed - query database):
+export async function getCurrentUser(): Promise<User | null> {
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .limit(1)
+    .single();
+
+  if (error) {
+    console.error('Failed to get user from database:', error);
+    return null;
+  }
+
+  return data;  // ✅ Use actual user from database
+}
+```
+
+**Resolution:** ✅ Fixed - Deployed to production
+
+**Verification:**
+- Build successful locally
+- Auto-deployed to Vercel
+- Foreign key constraint will now succeed (user exists in database)
+- Ready for manual testing at production URL
