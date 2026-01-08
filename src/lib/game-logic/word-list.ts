@@ -1,0 +1,26 @@
+/**
+ * 172 sight words for 2nd grade spelling practice
+ * Derived from Dolch sight word list, excluding single-letter words
+ */
+export const WORD_LIST = [
+  "and", "away", "big", "blue", "can", "come", "down", "find", "for", "funny",
+  "go", "help", "here", "in", "is", "it", "jump", "little", "look", "make",
+  "me", "my", "not", "one", "play", "red", "run", "said", "see", "the",
+  "three", "to", "two", "up", "we", "where", "yellow", "you", "yes", "am",
+  "are", "at", "be", "but", "did", "do", "eat", "four", "get", "good",
+  "have", "he", "into", "like", "must", "new", "no", "now", "on", "out",
+  "please", "pretty", "ride", "she", "so", "soon", "that", "there", "they", "this",
+  "too", "under", "want", "was", "well", "what", "who", "will", "with", "all",
+  "an", "as", "ask", "by", "came", "could", "day", "every", "fly", "from",
+  "give", "going", "had", "has", "her", "him", "his", "how", "just", "know",
+  "let", "live", "may", "of", "old", "once", "open", "over", "put", "round",
+  "some", "stop", "take", "thank", "them", "then", "think", "walk", "when", "why",
+  "wish", "would", "your", "after", "again", "any", "because", "been", "before", "best",
+  "both", "bring", "carry", "clean", "cold", "done", "drink", "eight", "fall", "far",
+  "full", "got", "grow", "hold", "hot", "hurt", "if", "keep", "kind", "laugh",
+  "light", "long", "much", "myself", "never", "only", "own", "pick", "seven", "shall",
+  "show", "six", "small", "start", "ten", "today", "together", "try", "use", "warm",
+  "which", "write"
+] as const;
+
+export type SpellingWord = typeof WORD_LIST[number];
