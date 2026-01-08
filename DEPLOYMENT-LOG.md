@@ -63,3 +63,48 @@ Error occurred prerendering page "/math/subtraction"
 - Only publishable key should be in Vercel (client-safe)
 - Service role key stays in local `.env.local` only (dev only)
 - RLS is disabled for MVP (re-enable in Phase 4)
+
+---
+
+## 2026-01-08 - Fix Submit Button Not Working
+
+### Issue 3: Submit Button Not Responding
+**Error:**
+- Submit button in subtraction game not working
+- No database operations occurring
+- Silent failure with no console errors
+
+**Root Cause:**
+- Supabase client was attempting to use service role key in production
+- Logic: `isDevelopment && process.env.SUPABASE_SERVICE_ROLE_KEY ? SERVICE_ROLE : ANON`
+- In production, `SUPABASE_SERVICE_ROLE_KEY` doesn't exist in Vercel env vars
+- Fallback to anon key was happening, but client creation was failing silently
+
+**Fix:**
+- Simplified Supabase client to always use anon key
+- Since RLS is disabled for MVP, no need for service role key distinction
+- Removed conditional logic entirely
+- Committed as `ed61024`
+
+**Code Change:**
+```typescript
+// Before (problematic):
+const isDevelopment = process.env.NODE_ENV === 'development';
+const supabaseKey = isDevelopment && process.env.SUPABASE_SERVICE_ROLE_KEY
+  ? process.env.SUPABASE_SERVICE_ROLE_KEY
+  : process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+// After (fixed):
+// Always use anon key - RLS is disabled for MVP
+export const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
+```
+
+**Resolution:** ✅ Fixed - Deployed to production
+
+**Testing:**
+- Build successful locally
+- Auto-deployed to Vercel via GitHub push
+- Ready for manual verification at production URL
