@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { useGameState } from '@/hooks/useGameState';
@@ -28,6 +28,7 @@ export default function AdditionGame() {
   const [feedback, setFeedback] = useState('');
   const [attemptNumber, setAttemptNumber] = useState(1);
   const [showCelebration, setShowCelebration] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Select random image and video
   const [selectedImage] = useState(() =>
@@ -73,12 +74,16 @@ export default function AdditionGame() {
           setUserAnswer('');
           setFeedback('');
           setAttemptNumber(1);
+          // Re-focus the input for the next problem
+          inputRef.current?.focus();
         }, 2000);
       }
     } else {
       setFeedback('Try Again!');
       setUserAnswer('');
       setAttemptNumber(prev => prev + 1);
+      // Re-focus the input after incorrect answer
+      inputRef.current?.focus();
     }
   };
 
@@ -155,6 +160,7 @@ export default function AdditionGame() {
 
             {/* Answer input - styled to match the problem */}
             <input
+              ref={inputRef}
               type="number"
               value={userAnswer}
               onChange={(e) => setUserAnswer(e.target.value)}
