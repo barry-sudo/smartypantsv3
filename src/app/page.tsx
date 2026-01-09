@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { ASSETS } from '@/lib/assets';
 
 const ADMIN_HOLD_DURATION = 3000; // 3 seconds
 
@@ -39,38 +40,52 @@ export default function LandingPage() {
           onTouchStart={handlePressStart}
           onTouchEnd={handlePressEnd}
           onTouchCancel={handlePressCancel}
-          className={`text-6xl font-bold text-orange mb-4 cursor-pointer select-none transition-transform ${
+          className={`text-6xl font-bold text-orange mb-2 cursor-pointer select-none transition-transform italic ${
             isHolding ? 'scale-95' : ''
           }`}
         >
           Smarty Pants
         </h1>
-        <p className="text-2xl text-jungle font-bold mb-12">
+        <p className="text-2xl text-jungle font-bold mb-8 italic">
           2nd Grade Edition
         </p>
 
-        <div className="flex flex-col gap-6">
+        {/* Profile Image */}
+        <div className="flex justify-center mb-10">
+          <div className="w-48 h-48 rounded-full border-4 border-orange overflow-hidden">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={ASSETS.profileImage}
+              alt="Student"
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+
+        {/* Side-by-side buttons */}
+        <div className="flex gap-6 justify-center">
           <Link
             href="/math"
-            className="text-3xl px-12 py-8 bg-gradient-to-b from-orange to-orange-dark text-white rounded-xl font-bold hover:scale-105 transition-transform"
+            className="text-3xl px-12 py-6 bg-gradient-to-b from-orange to-orange-dark text-white rounded-2xl font-bold hover:scale-105 transition-transform"
           >
-            Math Games
+            Math
           </Link>
 
           <Link
             href="/spelling"
-            className="text-3xl px-12 py-8 bg-gradient-to-b from-jungle to-jungle-light text-white rounded-xl font-bold hover:scale-105 transition-transform"
+            className="text-3xl px-12 py-6 bg-gradient-to-b from-orange to-orange-dark text-white rounded-2xl font-bold hover:scale-105 transition-transform"
           >
-            Spelling Game
-          </Link>
-
-          <Link
-            href="/progress"
-            className="text-2xl px-8 py-4 bg-white border-4 border-jungle text-jungle rounded-xl font-bold hover:bg-jungle/10 transition-colors"
-          >
-            View Progress
+            Spelling
           </Link>
         </div>
+
+        {/* View Progress link - smaller, below */}
+        <Link
+          href="/progress"
+          className="inline-block mt-8 text-lg text-jungle/70 hover:text-jungle underline transition-colors"
+        >
+          View Progress
+        </Link>
       </div>
     </main>
   );

@@ -1,6 +1,8 @@
 const BASE_URL = 'https://kwvqxvyklsrkfgykmtfu.supabase.co/storage/v1/object/public';
 
 export const ASSETS = {
+  profileImage: `${BASE_URL}/images/profile.jpeg`,
+
   images: [
     `${BASE_URL}/images/image1.jpg`,
     `${BASE_URL}/images/image2.jpg`,

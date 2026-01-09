@@ -28,6 +28,8 @@ export default function SpellingGame() {
   const [attemptNumber, setAttemptNumber] = useState(1);
   const [showCelebration, setShowCelebration] = useState(false);
   const [audioError, setAudioError] = useState(false);
+  const [showWritePrompt, setShowWritePrompt] = useState(false);
+  const [isSessionComplete, setIsSessionComplete] = useState(false);
 
   // Select random image and video
   const [selectedImage] = useState(() =>
@@ -77,19 +79,31 @@ export default function SpellingGame() {
     });
 
     // Check if session complete
-    if (correctCount + 1 >= 25) {
+    const sessionComplete = correctCount + 1 >= 25;
+    if (sessionComplete) {
       await completeSession(seconds);
-      setTimeout(() => setShowCelebration(true), 2000);
+      setIsSessionComplete(true);
+    }
+
+    // Show write prompt after 1.5 seconds (to let user see feedback)
+    setTimeout(() => {
+      setShowWritePrompt(true);
+    }, 1500);
+  };
+
+  const handleWriteDone = (): void => {
+    setShowWritePrompt(false);
+
+    if (isSessionComplete) {
+      setShowCelebration(true);
     } else {
-      // Select next word after 2 seconds
-      setTimeout(() => {
-        const newUsedWords = [...usedWords, currentWord];
-        setUsedWords(newUsedWords);
-        const nextWord = selectRandomWord(newUsedWords);
-        setCurrentWord(nextWord);
-        playWordAudio(nextWord);
-        setAttemptNumber(1);
-      }, 2000);
+      // Load next word
+      const newUsedWords = [...usedWords, currentWord!];
+      setUsedWords(newUsedWords);
+      const nextWord = selectRandomWord(newUsedWords);
+      setCurrentWord(nextWord);
+      playWordAudio(nextWord);
+      setAttemptNumber(1);
     }
   };
 
@@ -140,7 +154,25 @@ export default function SpellingGame() {
       {/* Two-panel layout */}
       <div className="flex flex-col lg:flex-row gap-5 p-5 pt-20 max-w-7xl mx-auto min-h-screen items-center justify-center">
         {/* Left panel: Spelling interface */}
-        <div className="flex-1 bg-white/95 rounded-[30px] p-16 border-[6px] border-orange w-full max-w-2xl">
+        <div className="flex-1 bg-white/95 rounded-[30px] p-16 border-[6px] border-orange w-full max-w-2xl relative">
+          {/* Write prompt overlay */}
+          {showWritePrompt && (
+            <div className="absolute inset-0 bg-white/95 rounded-[30px] flex flex-col items-center justify-center z-10">
+              <div className="text-5xl font-bold text-jungle text-center mb-8">
+                Now write out the word
+              </div>
+              <div className="text-3xl text-jungle-dark text-center mb-12">
+                &ldquo;{currentWord}&rdquo;
+              </div>
+              <button
+                onClick={handleWriteDone}
+                className="text-3xl px-16 py-8 bg-gradient-to-b from-orange to-orange-dark text-white rounded-xl font-bold hover:scale-105 transition-transform active:scale-95"
+              >
+                I&apos;m Done
+              </button>
+            </div>
+          )}
+
           <div className="text-5xl font-bold text-jungle text-center mb-10">
             Spell the word:
           </div>
