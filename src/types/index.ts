@@ -50,10 +50,14 @@ export interface GoalProgress {
   goal_id: string;
   user_id: string;
   title: string;
+  description?: string | null;
+  prize_image_path?: string;
   sessions_required: number;
   sessions_completed: number;
+  min_accuracy?: number | null;
   avg_accuracy: number;
   goal_achieved: boolean;
+  active?: boolean;
 }
 
 export interface Problem {
