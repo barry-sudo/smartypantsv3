@@ -78,26 +78,35 @@ Documentation of v2 (HTML) implementation:
 Legend: ✅ Complete | 🚧 In Progress | ⏳ Planned | ❌ Not Started
 
 ### Foundation
-- ⏳ Supabase project setup
-- ⏳ Asset upload to storage
-- ⏳ Next.js scaffolding
-- ⏳ Database migrations
-- ⏳ Authentication setup
+- ✅ Supabase project setup
+- ✅ Asset upload to storage
+- ✅ Next.js scaffolding
+- ✅ Database migrations
+- ✅ Authentication setup
 
 ### Game Modules
-- ⏳ Subtraction game
-- ⏳ Addition game
-- ⏳ Spelling game
+- ✅ Subtraction game
+- ✅ Addition game
+- ✅ Spelling game (with write prompt)
 
 ### Features
-- ⏳ Progress dashboard
-- ⏳ Admin panel
-- ⏳ Goal system
+- ✅ Progress dashboard
+- ✅ Admin panel
+- ✅ Goal system
 
 ### Deployment
-- ⏳ Production build
-- ⏳ Vercel deployment
+- ✅ Production build
+- ✅ Vercel deployment (https://smartypantsv3.vercel.app)
 - ⏳ Custom domain (optional)
+
+### Post-Launch Enhancements (2026-01-09)
+- ✅ Vertical arithmetic layout for math games
+- ✅ Always-visible stopwatch timer (pauses during spelling write prompt)
+- ✅ Auto-focus answer input
+- ✅ Back to Home navigation
+- ✅ Landing page with profile image
+
+See [DEPLOYMENT-LOG.md](../DEPLOYMENT-LOG.md) for detailed enhancement documentation.
 
 ---
 

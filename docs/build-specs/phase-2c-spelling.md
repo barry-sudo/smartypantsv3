@@ -1,10 +1,12 @@
 # Build Spec: Phase 2C - Spelling Game
 
-**Phase:** 2C  
-**Feature:** Spelling game module  
-**Complexity:** Medium  
-**Estimated Time:** ~3 hours  
-**Status:** ⏳ Not Started
+**Phase:** 2C
+**Feature:** Spelling game module
+**Complexity:** Medium
+**Estimated Time:** ~3 hours
+**Status:** ✅ Complete (Deployed 2026-01-08)
+
+> **Note:** This spec was written during the architecture phase. The actual implementation includes: write prompt step (handwriting practice with timer pause), always-visible stopwatch timer, and "← Back to Home" navigation. See `DEPLOYMENT-LOG.md` for details.
 
 ---
 
@@ -158,18 +160,29 @@ export function LetterBoxes({ wordLength, correctWord, onComplete }: LetterBoxes
 ## Success Criteria
 
 ### Functional
-- [ ] Word audio plays on load
-- [ ] Can replay audio with button
-- [ ] Letter boxes auto-advance on correct input
-- [ ] Incorrect letters shake and clear
-- [ ] Grid reveals per correct word
-- [ ] Celebration after 25 words
+- [x] Word audio plays on load
+- [x] Can replay audio with button
+- [x] Letter boxes auto-advance on correct input
+- [x] Incorrect letters shake and clear
+- [x] Grid reveals per correct word
+- [x] Celebration after 25 words
 
 ### Technical
-- [ ] Audio handles autoplay restrictions
-- [ ] All 172 words accessible
-- [ ] No word repetition in session
-- [ ] Database logging works
+- [x] Audio handles autoplay restrictions
+- [x] All 172 words accessible
+- [x] No word repetition in session
+- [x] Database logging works
+
+### Write Prompt Feature (Implemented)
+- [x] After correct spelling, show "Now write out the word" overlay
+- [x] Display the correctly spelled word for handwriting reference
+- [x] "I'm Done" button to advance to next word
+- [x] Timer PAUSES during write prompt (handwriting time not counted)
+- [x] Timer RESUMES when user clicks "I'm Done"
+
+### Post-Launch Enhancements (2026-01-09)
+- [x] Always-visible stopwatch timer with pause during write prompt
+- [x] "← Back to Home" navigation link
 
 ---
 
@@ -201,4 +214,4 @@ audio.play().catch(() => {
 });
 ```
 
-**Write prompt (optional):** After correct spelling, show "Now write the word" with "I'm Done" button before advancing. This connects digital to physical practice.
+**Write prompt (implemented):** After correct spelling, shows "Now write out the word" overlay with the word displayed. User clicks "I'm Done" after handwriting practice. Timer pauses during this phase so handwriting time isn't counted in session time.

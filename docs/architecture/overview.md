@@ -1,8 +1,8 @@
 # Architecture Overview
 
-**Project:** Smarty Pants v3  
-**Last Updated:** 2025-01-06  
-**Status:** Architecture Complete, Ready for Build Phase
+**Project:** Smarty Pants v3
+**Last Updated:** 2026-01-09
+**Status:** ✅ Deployed to Production (https://smartypantsv3.vercel.app)
 
 ---
 
@@ -122,33 +122,48 @@ src/lib/
 
 ### Game Session Flow
 
+**Math Games (Addition/Subtraction):**
 ```
-1. User selects game module (Addition/Subtraction/Spelling)
+1. User selects game module
    ↓
-2. Game component loads
+2. Game component loads, stopwatch timer starts at 00:00
    ↓
 3. useGameState hook creates session in database
    ↓
-4. Problem generated (pure function in game-logic/)
+4. Problem displayed in vertical arithmetic format (worksheet style)
    ↓
-5. User submits answer
+5. Answer input auto-focused, user types answer
    ↓
-6. Answer validated
+6. On submit: Answer validated, attempt logged to database
    ↓
-7. Attempt logged to database (problem_attempts table)
+7. If correct:
+   - Play tiger roar audio
+   - Show "ROAR!" feedback
+   - Reveal random grid cell
+   - Generate next problem (input re-focused)
    ↓
-8. If correct:
-   - Update session (correct_count++)
-   - Reveal grid cell
-   - Play audio feedback
-   - Generate next problem
+8. If incorrect:
+   - Show "Try Again!" feedback
+   - Clear input (re-focused)
+   - Increment attempt counter
    ↓
 9. After 25 correct:
-   - Mark session complete
+   - Complete session with timer value
    - Show celebration video
-   - Navigate to progress dashboard
+   - Navigate to landing page
+```
+
+**Spelling Game:**
+```
+1-7. Same as math games (audio plays word instead of showing problem)
    ↓
-10. Dashboard queries analytics from database
+8. After correct spelling:
+   - Timer PAUSES
+   - Show "Now write out the word" prompt
+   - User clicks "I'm Done" after handwriting practice
+   - Timer RESUMES, next word loads
+   ↓
+9. After 25 correct: Same as math games
 ```
 
 ### Authentication Flow (Phase 1)
@@ -225,10 +240,9 @@ src/lib/
 
 **Shared components in `src/components/game/`:**
 - `ImageReveal` - 5x5 grid reveal system
-- `Timer` - Optional session timer
-- `Counter` - "X out of 25" progress
-- `ProblemDisplay` - Large problem text
-- `AudioPlayer` - Audio playback with autoplay handling
+- `Timer` - Always-visible stopwatch (MM:SS format, pauses during spelling write prompt)
+- `Counter` - "X out of 25" progress with optional "← Back to Home" navigation
+- `LetterBoxes` - Individual letter inputs for spelling with auto-advance
 - `CelebrationVideo` - Fullscreen celebration
 
 ---
@@ -247,17 +261,23 @@ src/lib/
 /admin                   # Goal management (parent only)
 ```
 
-**Query params:**
-- `?timer=true` - Enable timer display (optional)
-
 ### Navigation Flow
 
 ```
-Landing → Math Selection → Game → Celebration → Progress Dashboard
-                                                     ↓
-                                               [Back to Math]
-                                              OR [Play Again]
+Landing (with profile image, side-by-side Math/Spelling buttons)
+    ↓
+Math Selection OR Spelling Game
+    ↓
+Game (with "← Back to Home" link in header)
+    ↓
+Celebration Video
+    ↓
+Landing Page
 ```
+
+**In-game navigation:**
+- "← Back to Home" link visible next to score counter
+- Allows returning to landing page without completing session
 
 **Admin access:**
 - Hidden from main navigation
@@ -432,9 +452,18 @@ See [migration/html-reference.md](../migration/html-reference.md) for complete d
 
 - 5x5 grid reveal system (excellent UX)
 - Jungle theme colors (green/orange)
-- Audio feedback patterns
+- Audio feedback patterns (tiger roar, word pronunciation)
 - 25-question session structure
-- Timer optional toggle
+- Write prompt step for spelling (handwriting practice)
+- Landing page with profile image
+
+### What We Improved
+
+- Vertical arithmetic layout (matches homework worksheets)
+- Always-visible stopwatch timer (no toggle needed)
+- Timer pauses during spelling write prompt (handwriting time not counted)
+- Auto-focus on answer input (no clicking required)
+- In-game navigation back to home
 
 ### What We Fixed
 

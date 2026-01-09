@@ -1,10 +1,12 @@
 # Build Spec: Phase 2B - Addition Game
 
-**Phase:** 2B  
-**Feature:** Addition game module  
-**Complexity:** Simple (follows Phase 2A pattern)  
-**Estimated Time:** ~2 hours  
-**Status:** ⏳ Not Started
+**Phase:** 2B
+**Feature:** Addition game module
+**Complexity:** Simple (follows Phase 2A pattern)
+**Estimated Time:** ~2 hours
+**Status:** ✅ Complete (Deployed 2026-01-08)
+
+> **Note:** This spec was written during the architecture phase. The actual implementation includes post-launch enhancements: vertical arithmetic layout, always-visible stopwatch timer, auto-focus input, and "← Back to Home" navigation. See `DEPLOYMENT-LOG.md` for details.
 
 ---
 
@@ -103,18 +105,24 @@ describe('generateAdditionProblem', () => {
 ## Success Criteria
 
 ### Functional
-- [ ] Can start addition game
-- [ ] Problems generate correctly (1-20, correct sums)
-- [ ] Correct answers show feedback and play audio
-- [ ] Grid reveals work
-- [ ] Counter updates
-- [ ] Celebration plays after 25 correct
-- [ ] Session logged to database
+- [x] Can start addition game
+- [x] Problems generate correctly (1-20, correct sums)
+- [x] Correct answers show feedback and play audio
+- [x] Grid reveals work
+- [x] Counter updates
+- [x] Celebration plays after 25 correct
+- [x] Session logged to database
 
 ### Technical
-- [ ] Problem generator 100% tested
-- [ ] No code duplication (reuses Phase 2A components)
-- [ ] Follows same patterns
+- [x] Problem generator 100% tested
+- [x] No code duplication (reuses Phase 2A components)
+- [x] Follows same patterns
+
+### Post-Launch Enhancements (2026-01-09)
+- [x] Vertical arithmetic layout (worksheet style)
+- [x] Auto-focus on answer input
+- [x] "← Back to Home" navigation link
+- [x] Always-visible stopwatch timer
 
 ---
 

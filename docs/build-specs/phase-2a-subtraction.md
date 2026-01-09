@@ -1,10 +1,12 @@
 # Build Spec: Phase 2A - Subtraction Game
 
-**Phase:** 2A  
-**Feature:** Subtraction game module  
-**Complexity:** Medium  
-**Estimated Time:** ~4 hours  
-**Status:** ⏳ Not Started
+**Phase:** 2A
+**Feature:** Subtraction game module
+**Complexity:** Medium
+**Estimated Time:** ~4 hours
+**Status:** ✅ Complete (Deployed 2026-01-08)
+
+> **Note:** This spec was written during the architecture phase. The actual implementation includes post-launch enhancements: vertical arithmetic layout, always-visible stopwatch timer, auto-focus input, and "← Back to Home" navigation. See `DEPLOYMENT-LOG.md` for details.
 
 ---
 
@@ -587,29 +589,34 @@ export async function logAttempt(
 ## Success Criteria
 
 ### Functional
-- [ ] Can start subtraction game
-- [ ] Problems generate correctly (positive answers, numbers < 20)
-- [ ] Correct answers show "ROAR!" and play tiger roar audio
-- [ ] Incorrect answers show "Try Again!" and clear input
-- [ ] Grid reveals one cell per correct answer
-- [ ] Counter updates: "X out of 25"
-- [ ] After 25 correct: celebration video plays
-- [ ] Session logged to database with all attempts
-- [ ] Timer works if enabled (optional toggle)
+- [x] Can start subtraction game
+- [x] Problems generate correctly (positive answers, numbers < 20)
+- [x] Correct answers show "ROAR!" and play tiger roar audio
+- [x] Incorrect answers show "Try Again!" and clear input
+- [x] Grid reveals one cell per correct answer
+- [x] Counter updates: "X out of 25"
+- [x] After 25 correct: celebration video plays
+- [x] Session logged to database with all attempts
+- [x] Timer displays always (stopwatch format, no toggle)
 
 ### Technical
-- [ ] All TypeScript, no `any` types
-- [ ] Problem generator has 100% test coverage
-- [ ] Component tests cover main interactions
-- [ ] Database queries handle errors gracefully
-- [ ] No console.log in production code
-- [ ] Follows patterns in `.claude/rules/`
+- [x] All TypeScript, no `any` types
+- [x] Problem generator has 100% test coverage
+- [x] Component tests cover main interactions
+- [x] Database queries handle errors gracefully
+- [x] No console.log in production code
+- [x] Follows patterns in `.claude/rules/`
 
 ### Quality
-- [ ] Responsive on desktop and tablet
-- [ ] Audio handles autoplay restrictions
-- [ ] Loading states during data fetching
-- [ ] Smooth animations (cell reveals, feedback)
+- [x] Responsive on desktop and tablet
+- [x] Audio handles autoplay restrictions
+- [x] Loading states during data fetching
+- [x] Smooth animations (cell reveals, feedback)
+
+### Post-Launch Enhancements (2026-01-09)
+- [x] Vertical arithmetic layout (worksheet style)
+- [x] Auto-focus on answer input
+- [x] "← Back to Home" navigation link
 
 ---
 

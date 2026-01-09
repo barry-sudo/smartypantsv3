@@ -215,18 +215,22 @@ This is v3, a complete rebuild of v2 (static HTML). Key changes:
 Legend: ✅ Complete | 🚧 In Progress | ⏳ Planned | ❌ Not Started
 
 **Foundation:**
-- ⏳ Phase 0: Supabase setup + asset upload
-- ⏳ Phase 1: Next.js scaffold + database + auth
+- ✅ Phase 0: Supabase setup + asset upload
+- ✅ Phase 1: Next.js scaffold + database + auth
 
 **Game Modules:**
-- ⏳ Phase 2A: Subtraction game
-- ⏳ Phase 2B: Addition game
-- ⏳ Phase 2C: Spelling game
+- ✅ Phase 2A: Subtraction game
+- ✅ Phase 2B: Addition game
+- ✅ Phase 2C: Spelling game (with write prompt)
 
 **Features:**
-- ⏳ Phase 3: Progress Dashboard
-- ⏳ Phase 4: Admin Panel + Goals
-- ⏳ Phase 5: Polish + Deploy
+- ✅ Phase 3: Progress Dashboard
+- ✅ Phase 4: Admin Panel + Goals
+- ✅ Phase 5: Polish + Deploy
+
+**Production URL:** https://smartypantsv3.vercel.app
+
+**Post-Launch Enhancements:** See `DEPLOYMENT-LOG.md` for UX improvements deployed 2026-01-09
 
 **Detailed specs:** See `docs/build-specs/` for each phase
 
