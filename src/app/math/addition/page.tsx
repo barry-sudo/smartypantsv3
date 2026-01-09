@@ -16,8 +16,7 @@ import type { Problem } from '@/types';
 export default function AdditionGame() {
   const router = useRouter();
   const { user } = useAuth();
-  const [timerEnabled, setTimerEnabled] = useState(false);
-  const { seconds } = useTimer(timerEnabled);
+  const { seconds } = useTimer(true); // Always running stopwatch
   const { session, correctCount, submitAnswer, completeSession, isLoading } = useGameState({
     module: 'addition',
     userId: user?.id || ''
@@ -121,18 +120,9 @@ export default function AdditionGame() {
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-jungle-dark via-jungle to-jungle-light relative">
-      {/* Timer toggle and display */}
-      <div className="absolute top-5 right-5 flex flex-col items-end gap-2">
-        <label className="flex items-center gap-2 bg-white/90 px-4 py-2 rounded-lg cursor-pointer">
-          <input
-            type="checkbox"
-            checked={timerEnabled}
-            onChange={(e) => setTimerEnabled(e.target.checked)}
-            className="w-5 h-5"
-          />
-          <span className="text-jungle font-bold">Timer</span>
-        </label>
-        {timerEnabled && <Timer seconds={seconds} />}
+      {/* Stopwatch timer - always visible */}
+      <div className="absolute top-5 right-5">
+        <Timer seconds={seconds} />
       </div>
 
       {/* Counter with Back to Home link */}
