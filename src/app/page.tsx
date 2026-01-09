@@ -1,10 +1,48 @@
+'use client';
+
+import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+const ADMIN_HOLD_DURATION = 3000; // 3 seconds
+
 export default function LandingPage() {
+  const router = useRouter();
+  const pressStartRef = useRef<number | null>(null);
+  const [isHolding, setIsHolding] = useState(false);
+
+  const handlePressStart = (): void => {
+    pressStartRef.current = Date.now();
+    setIsHolding(true);
+  };
+
+  const handlePressEnd = (): void => {
+    if (pressStartRef.current && Date.now() - pressStartRef.current >= ADMIN_HOLD_DURATION) {
+      router.push('/admin');
+    }
+    pressStartRef.current = null;
+    setIsHolding(false);
+  };
+
+  const handlePressCancel = (): void => {
+    pressStartRef.current = null;
+    setIsHolding(false);
+  };
+
   return (
     <main className="min-h-screen bg-gradient-to-br from-jungle-dark via-jungle to-jungle-light flex items-center justify-center p-8">
       <div className="bg-white/95 rounded-[30px] p-16 border-[6px] border-orange text-center max-w-2xl w-full">
-        <h1 className="text-6xl font-bold text-orange mb-4">
+        <h1
+          onMouseDown={handlePressStart}
+          onMouseUp={handlePressEnd}
+          onMouseLeave={handlePressCancel}
+          onTouchStart={handlePressStart}
+          onTouchEnd={handlePressEnd}
+          onTouchCancel={handlePressCancel}
+          className={`text-6xl font-bold text-orange mb-4 cursor-pointer select-none transition-transform ${
+            isHolding ? 'scale-95' : ''
+          }`}
+        >
           Smarty Pants
         </h1>
         <p className="text-2xl text-jungle font-bold mb-12">
