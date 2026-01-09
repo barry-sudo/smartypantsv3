@@ -137,21 +137,35 @@ export default function AdditionGame() {
       <div className="flex flex-col lg:flex-row gap-5 p-5 pt-20 max-w-7xl mx-auto min-h-screen items-center justify-center">
         {/* Left panel: Problem and input */}
         <div className="flex-1 bg-white/95 rounded-[30px] p-16 border-[6px] border-orange w-full max-w-2xl">
-          <div className="text-8xl font-bold text-jungle text-center mb-10">
-            {currentProblem.num1} + {currentProblem.num2}
-          </div>
+          {/* Vertical arithmetic layout */}
+          <div className="flex flex-col items-center mb-10">
+            <div className="font-mono text-8xl font-bold text-jungle">
+              {/* First number - right aligned */}
+              <div className="text-right pr-4">
+                {currentProblem.num1}
+              </div>
+              {/* Operator and second number */}
+              <div className="flex items-center">
+                <span className="text-jungle mr-2">+</span>
+                <span className="text-right flex-1">{currentProblem.num2}</span>
+              </div>
+              {/* Horizontal line */}
+              <div className="border-b-4 border-jungle mt-2 mb-4 w-full"></div>
+            </div>
 
-          <div className="flex flex-col items-center gap-8">
+            {/* Answer input - styled to match the problem */}
             <input
               type="number"
               value={userAnswer}
               onChange={(e) => setUserAnswer(e.target.value)}
               onKeyPress={handleKeyPress}
-              className="text-6xl w-64 text-center p-5 border-4 border-jungle rounded-xl focus:outline-none focus:ring-4 focus:ring-orange"
+              className="font-mono text-7xl w-48 text-center p-4 border-4 border-jungle rounded-xl focus:outline-none focus:ring-4 focus:ring-orange bg-white"
               autoFocus
               placeholder="?"
             />
+          </div>
 
+          <div className="flex flex-col items-center gap-6">
             <button
               onClick={handleSubmit}
               className="text-4xl px-20 py-6 bg-gradient-to-b from-orange to-orange-dark text-white rounded-xl font-bold hover:scale-105 transition-transform active:scale-95"
@@ -160,7 +174,7 @@ export default function AdditionGame() {
             </button>
 
             <div
-              className={`text-5xl font-bold min-h-20 flex items-center ${
+              className={`text-5xl font-bold min-h-16 flex items-center ${
                 feedback === 'ROAR!' ? 'text-orange' : 'text-red-600'
               }`}
             >
