@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
 import { useGameState } from '@/hooks/useGameState';
 import { useTimer } from '@/hooks/useTimer';
@@ -121,6 +122,14 @@ export default function SubtractionGame() {
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-jungle-dark via-jungle to-jungle-light relative">
+      {/* Back to Home link */}
+      <Link
+        href="/"
+        className="absolute top-5 left-5 text-white hover:text-orange transition-colors font-medium"
+      >
+        ← Back to Home
+      </Link>
+
       {/* Timer toggle and display */}
       <div className="absolute top-5 right-5 flex flex-col items-end gap-2">
         <label className="flex items-center gap-2 bg-white/90 px-4 py-2 rounded-lg cursor-pointer">
