@@ -176,3 +176,97 @@ export async function getCurrentUser(): Promise<User | null> {
 - Auto-deployed to Vercel
 - Foreign key constraint will now succeed (user exists in database)
 - Ready for manual testing at production URL
+
+---
+
+## 2026-01-09 - UX Enhancements
+
+### Enhancement 1: Spelling Game Write Prompt
+**Feature:**
+- Added handwriting practice step after each correctly spelled word
+- Shows overlay with "Now write out the word" and displays the word
+- "I'm Done" button advances to next word
+- Matches original v2 spelling.html behavior
+
+**Files Changed:**
+- `src/app/spelling/page.tsx` - Added `showWritePrompt` and `isSessionComplete` state
+
+**Commit:** Part of spelling game updates
+
+---
+
+### Enhancement 2: Landing Page Restoration
+**Feature:**
+- Restored original v2 landing page design
+- Added circular profile image at top
+- Side-by-side Math and Spelling buttons
+- Italic welcome text styling
+
+**Files Changed:**
+- `src/app/page.tsx` - Updated layout and styling
+- `src/lib/assets.ts` - Added `profileImage` asset URL
+
+**Asset Added:** `profile.jpeg` uploaded to Supabase images bucket
+
+---
+
+### Enhancement 3: Vertical Arithmetic Layout
+**Feature:**
+- Changed math problem display from horizontal (5 + 3 = ?) to vertical format
+- Matches traditional homework worksheet style
+- First number on top, operator with second number below, horizontal line, answer input
+
+**Files Changed:**
+- `src/app/math/addition/page.tsx` - Vertical layout with monospace font
+- `src/app/math/subtraction/page.tsx` - Vertical layout with monospace font
+
+---
+
+### Enhancement 4: Auto-Focus Answer Input
+**Feature:**
+- Answer input automatically receives focus when new problem loads
+- Re-focuses after incorrect answer
+- Eliminates need for child to click into input box
+
+**Files Changed:**
+- `src/app/math/addition/page.tsx` - Added `inputRef` and focus calls
+- `src/app/math/subtraction/page.tsx` - Added `inputRef` and focus calls
+
+---
+
+### Enhancement 5: Back to Home Navigation
+**Feature:**
+- Added "← Back to Home" link to all game modules
+- Integrated into Counter component (displays to right of score)
+- Consistent navigation across all games
+
+**Files Changed:**
+- `src/components/game/Counter.tsx` - Added `showBackLink` prop
+- `src/app/math/addition/page.tsx` - Uses `showBackLink` prop
+- `src/app/math/subtraction/page.tsx` - Uses `showBackLink` prop
+- `src/app/spelling/page.tsx` - Uses `showBackLink` prop
+
+---
+
+### Enhancement 6: Always-Visible Stopwatch Timer
+**Feature:**
+- Replaced timer checkbox toggle with always-visible stopwatch
+- Displays as MM:SS format counting up from 00:00
+- Math games: timer runs continuously throughout session
+- Spelling game: timer pauses during write prompt (handwriting time not counted)
+
+**Files Changed:**
+- `src/components/game/Timer.tsx` - Simplified to always-visible display
+- `src/app/math/addition/page.tsx` - `useTimer(true)`, removed checkbox UI
+- `src/app/math/subtraction/page.tsx` - `useTimer(true)`, removed checkbox UI
+- `src/app/spelling/page.tsx` - `useTimer(!showWritePrompt)`, pauses during write prompt
+
+**Commit:** `456e5c3` - Replace timer checkbox with always-visible stopwatch
+
+---
+
+## ✅ All Enhancements Deployed
+
+**Production URL:** https://smartypantsv3.vercel.app
+
+**Status:** Ready - Deployed 2026-01-09
