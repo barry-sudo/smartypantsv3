@@ -25,6 +25,13 @@ export default function MathModulePage() {
           >
             Addition
           </Link>
+
+          <Link
+            href="/math/multiplication"
+            className="text-3xl px-12 py-8 bg-gradient-to-b from-orange to-orange-dark text-white rounded-xl font-bold text-center hover:scale-105 transition-transform"
+          >
+            Multiplication
+          </Link>
         </div>
 
         <Link

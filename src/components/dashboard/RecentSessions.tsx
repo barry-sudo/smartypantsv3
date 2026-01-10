@@ -8,12 +8,14 @@ export interface RecentSessionsProps {
 const moduleLabels: Record<GameModule, string> = {
   addition: 'Addition',
   subtraction: 'Subtraction',
+  multiplication: 'Multiplication',
   spelling: 'Spelling',
 };
 
 const moduleIcons: Record<GameModule, string> = {
   addition: '➕',
   subtraction: '➖',
+  multiplication: '✖️',
   spelling: '📝',
 };
 

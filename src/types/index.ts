@@ -1,4 +1,4 @@
-export type GameModule = 'addition' | 'subtraction' | 'spelling';
+export type GameModule = 'addition' | 'subtraction' | 'multiplication' | 'spelling';
 
 export interface User {
   id: string;
@@ -64,5 +64,5 @@ export interface Problem {
   num1: number;
   num2: number;
   answer: number;
-  operation: 'addition' | 'subtraction';
+  operation: 'addition' | 'subtraction' | 'multiplication';
 }

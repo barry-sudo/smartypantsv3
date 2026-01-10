@@ -8,18 +8,21 @@ export interface ModuleBreakdownProps {
 const moduleLabels: Record<GameModule, string> = {
   addition: 'Addition',
   subtraction: 'Subtraction',
+  multiplication: 'Multiplication',
   spelling: 'Spelling',
 };
 
 const moduleIcons: Record<GameModule, string> = {
   addition: '➕',
   subtraction: '➖',
+  multiplication: '✖️',
   spelling: '📝',
 };
 
 const moduleColors: Record<GameModule, string> = {
   addition: 'bg-blue-500',
   subtraction: 'bg-purple-500',
+  multiplication: 'bg-orange-500',
   spelling: 'bg-green-500',
 };
 
