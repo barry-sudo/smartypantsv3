@@ -222,6 +222,7 @@ Legend: ✅ Complete | 🚧 In Progress | ⏳ Planned | ❌ Not Started
 - ✅ Phase 2A: Subtraction game
 - ✅ Phase 2B: Addition game
 - ✅ Phase 2C: Spelling game (with write prompt)
+- ✅ Phase 2D: Multiplication game (times tables 1-12)
 
 **Features:**
 - ✅ Phase 3: Progress Dashboard
@@ -230,7 +231,7 @@ Legend: ✅ Complete | 🚧 In Progress | ⏳ Planned | ❌ Not Started
 
 **Production URL:** https://smartypantsv3.vercel.app
 
-**Post-Launch Enhancements:** See `DEPLOYMENT-LOG.md` for UX improvements deployed 2026-01-09
+**Post-Launch Enhancements:** See `DEPLOYMENT-LOG.md` for UX improvements (2026-01-09) and multiplication module (2026-01-10)
 
 **Detailed specs:** See `docs/build-specs/` for each phase
 

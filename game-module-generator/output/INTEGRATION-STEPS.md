@@ -19,14 +19,17 @@
   operation: 'addition' | 'subtraction' | 'multiplication';
   ```
 
-## Database Updates
+## Database Updates (REQUIRED)
 
-- [ ] Update sessions table CHECK constraint (if strict validation):
+**CRITICAL:** The database has a CHECK constraint that must be updated or the Submit button will fail silently.
+
+- [ ] Run this SQL in Supabase Dashboard → SQL Editor:
   ```sql
   ALTER TABLE sessions DROP CONSTRAINT IF EXISTS sessions_module_check;
   ALTER TABLE sessions ADD CONSTRAINT sessions_module_check
     CHECK (module IN ('addition', 'subtraction', 'multiplication', 'spelling'));
   ```
+- [ ] Create migration file in `supabase/migrations/` for version control
 
 ## Math Selection Page
 

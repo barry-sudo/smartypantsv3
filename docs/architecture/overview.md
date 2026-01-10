@@ -253,9 +253,10 @@ src/lib/
 
 ```
 /                        # Landing page (Math / Spelling buttons)
-/math                    # Math module selection (Addition / Subtraction)
+/math                    # Math module selection (Addition / Subtraction / Multiplication)
 /math/addition           # Addition game
 /math/subtraction        # Subtraction game
+/math/multiplication     # Multiplication game (times tables 1-12)
 /spelling                # Spelling game
 /progress                # Analytics dashboard
 /admin                   # Goal management (parent only)

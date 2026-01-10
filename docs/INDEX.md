@@ -88,6 +88,7 @@ Legend: ✅ Complete | 🚧 In Progress | ⏳ Planned | ❌ Not Started
 - ✅ Subtraction game
 - ✅ Addition game
 - ✅ Spelling game (with write prompt)
+- ✅ Multiplication game (times tables 1-12)
 
 ### Features
 - ✅ Progress dashboard
