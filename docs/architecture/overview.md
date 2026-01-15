@@ -1,7 +1,7 @@
 # Architecture Overview
 
 **Project:** Smarty Pants v3
-**Last Updated:** 2026-01-09
+**Last Updated:** 2026-01-16
 **Status:** ✅ Deployed to Production (https://smartypantsv3.vercel.app)
 
 ---
@@ -46,8 +46,15 @@ src/app/
 ├── progress/             # Analytics dashboard
 ├── admin/                # Parent goal management
 ├── math/
-│   ├── addition/         # Addition game
-│   └── subtraction/      # Subtraction game
+│   ├── addition/         # Addition mode selection
+│   │   ├── study/        # Study Mode (25 questions, gamified)
+│   │   └── test/         # Test Mode (16 questions, homework-like)
+│   ├── subtraction/      # Subtraction mode selection
+│   │   ├── study/        # Study Mode
+│   │   └── test/         # Test Mode
+│   └── multiplication/   # Multiplication mode selection
+│       ├── study/        # Study Mode
+│       └── test/         # Test Mode
 └── spelling/             # Spelling game
 ```
 
@@ -122,13 +129,13 @@ src/lib/
 
 ### Game Session Flow
 
-**Math Games (Addition/Subtraction):**
+**Math Games - Study Mode (Addition/Subtraction/Multiplication):**
 ```
-1. User selects game module
+1. User selects game module → selects "Study Mode"
    ↓
 2. Game component loads, stopwatch timer starts at 00:00
    ↓
-3. useGameState hook creates session in database
+3. useGameState hook creates session in database (mode: 'study')
    ↓
 4. Problem displayed in vertical arithmetic format (worksheet style)
    ↓
@@ -151,6 +158,32 @@ src/lib/
    - Complete session with timer value
    - Show celebration video
    - Navigate to landing page
+```
+
+**Math Games - Test Mode (Addition/Subtraction/Multiplication):**
+```
+1. User selects game module → selects "Test Mode"
+   ↓
+2. NumberSelection: User enters fixed operand (1-9)
+   ↓
+3. Creates session in database (mode: 'test')
+   ↓
+4. TestGrid: 16 problems displayed in 2x8 grid layout
+   - Fixed operand appears as second number in all problems
+   - Vertical arithmetic format matching homework worksheets
+   ↓
+5. Timer runs continuously, user fills in answers
+   - Keyboard navigation (Tab, Enter, Arrow keys)
+   - Auto-focus on first input
+   ↓
+6. On "Submit Test":
+   - All 16 attempts logged to database
+   - Session completed with timer value
+   ↓
+7. TestCompletion: Results screen
+   - Shows correct count, percentage, time
+   - No celebration video (homework-like experience)
+   - Links to try again or return home
 ```
 
 **Spelling Game:**
@@ -252,14 +285,20 @@ src/lib/
 ### URL Structure
 
 ```
-/                        # Landing page (Math / Spelling buttons)
-/math                    # Math module selection (Addition / Subtraction / Multiplication)
-/math/addition           # Addition game
-/math/subtraction        # Subtraction game
-/math/multiplication     # Multiplication game (times tables 1-12)
-/spelling                # Spelling game
-/progress                # Analytics dashboard
-/admin                   # Goal management (parent only)
+/                              # Landing page (Math / Spelling buttons)
+/math                          # Math module selection (Addition / Subtraction / Multiplication)
+/math/addition                 # Addition mode selection (Study vs Test)
+/math/addition/study           # Addition Study Mode (25 questions, gamified)
+/math/addition/test            # Addition Test Mode (16 questions, homework-like)
+/math/subtraction              # Subtraction mode selection
+/math/subtraction/study        # Subtraction Study Mode
+/math/subtraction/test         # Subtraction Test Mode
+/math/multiplication           # Multiplication mode selection
+/math/multiplication/study     # Multiplication Study Mode
+/math/multiplication/test      # Multiplication Test Mode
+/spelling                      # Spelling game
+/progress                      # Analytics dashboard (Study/Test separated)
+/admin                         # Goal management (parent only)
 ```
 
 ### Navigation Flow
@@ -269,11 +308,13 @@ Landing (with profile image, side-by-side Math/Spelling buttons)
     ↓
 Math Selection OR Spelling Game
     ↓
-Game (with "← Back to Home" link in header)
+Mode Selection (Study Mode / Test Mode) [math only]
     ↓
-Celebration Video
-    ↓
-Landing Page
+Study Mode Game (gamified)    OR    Test Mode (homework-like)
+    ↓                               ↓
+Celebration Video                   Results Screen
+    ↓                               ↓
+Landing Page                        Landing Page
 ```
 
 **In-game navigation:**
@@ -477,11 +518,13 @@ See [migration/html-reference.md](../migration/html-reference.md) for complete d
 
 ## Future Enhancements
 
-**Not in MVP, but architecture supports:**
+**Not yet implemented, but architecture supports:**
 
 - Multi-user accounts (database ready)
 - Adaptive difficulty (structure in place)
-- More game modules (Multiplication, Division)
+- Division game module
+- Goal integration for Test Mode
+- Performance analytics by fixed operand (Test Mode)
 - Achievements system (badges table schema TBD)
 - Parent-child separate accounts (permissions model TBD)
 - Real-time leaderboards (Supabase real-time)

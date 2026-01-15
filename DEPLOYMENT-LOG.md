@@ -1,5 +1,135 @@
 # Deployment Log - Smarty Pants v3
 
+## 2026-01-16: Math Facts Test Mode Feature
+
+**Status:** ✅ Deployed to Production
+
+### Feature Overview
+Implemented comprehensive Test Mode for all math operations (Addition, Subtraction, Multiplication), providing homework-format practice with 16-question tests and fixed operand selection.
+
+### Implementation Phases (Jan 15-16, 2026)
+
+**Phase 1: Database Schema**
+- Added `mode` column to `sessions` table (values: 'study' | 'test')
+- Created migration: `20260115000001_add_session_mode.sql`
+- Added index: `idx_sessions_mode` for efficient queries
+- Updated TypeScript `Session` type in `/src/types/index.ts`
+- Updated `createSession()` query to accept optional mode parameter (defaults to 'study')
+
+**Phase 2: Test Mode Problem Generators**
+- Created `generateSubtractionTestModeProblems()` in `/src/lib/game-logic/subtraction.ts`
+- Created `generateAdditionTestModeProblems()` in `/src/lib/game-logic/addition.ts`
+- Created `generateMultiplicationTestModeProblems()` in `/src/lib/game-logic/multiplication.ts`
+- All generators produce 16 unique problems with fixed operand as second number
+- Subtraction ensures positive answers; first operand ranges 1-20
+
+**Phase 3: Route Restructuring**
+- Restructured routes to support mode selection:
+  - `/math/{operation}/` → Mode selection page (Study vs Test)
+  - `/math/{operation}/study/` → Study Mode (moved from root)
+  - `/math/{operation}/test/` → Test Mode (new)
+- Updated `useGameState` hook to accept optional `mode` parameter
+- Applied pattern to Addition, Subtraction, Multiplication
+
+**Phase 4: Test Mode UI Components**
+- Created `/src/components/test-mode/` directory with:
+  - `NumberSelection.tsx` - User selects number 1-9 for fixed operand
+  - `TestGrid.tsx` - 2x8 grid layout with 16 vertical arithmetic problems
+  - `TestCompletion.tsx` - Results screen (no celebration video, homework-like)
+  - `index.ts` - Barrel export
+- Created `formatTime()` utility in `/src/lib/utils.ts`
+- Implemented complete test pages for all three operations
+- Features: keyboard navigation, auto-focus, real-time timer, submit on completion
+
+**Phase 5: Analytics & Progress Dashboard**
+- Updated progress dashboard to separate Study/Test statistics
+- Added "Study Mode" section (green progress bars)
+- Added "Test Mode" section (blue progress bars)
+- Updated `ModuleBreakdown.tsx` with customizable title and bar color
+- Updated `RecentSessions.tsx` to show mode badges (Study/Test)
+- Created mode-specific analytics functions in `/src/lib/analytics/calculations.ts`
+
+### Files Created
+```
+New Files (13):
+- supabase/migrations/20260115000001_add_session_mode.sql
+- src/components/test-mode/NumberSelection.tsx
+- src/components/test-mode/TestGrid.tsx
+- src/components/test-mode/TestCompletion.tsx
+- src/components/test-mode/index.ts
+- src/lib/utils.ts
+- src/app/math/addition/study/page.tsx
+- src/app/math/addition/test/page.tsx
+- src/app/math/subtraction/study/page.tsx
+- src/app/math/subtraction/test/page.tsx
+- src/app/math/multiplication/study/page.tsx
+- src/app/math/multiplication/test/page.tsx
+```
+
+### Files Modified
+```
+Modified Files (15):
+- src/types/index.ts (added mode to Session interface)
+- src/lib/supabase/queries/sessions.ts (mode parameter)
+- src/lib/game-logic/addition.ts (test generator)
+- src/lib/game-logic/subtraction.ts (test generator)
+- src/lib/game-logic/multiplication.ts (test generator)
+- src/hooks/useGameState.ts (mode parameter)
+- src/hooks/useGameState.test.ts (mode parameter)
+- src/hooks/useStats.ts (mode-specific breakdowns)
+- src/lib/analytics/calculations.ts (mode-aware functions)
+- src/lib/analytics/calculations.test.ts (mode in mock data)
+- src/app/math/addition/page.tsx (mode selection)
+- src/app/math/subtraction/page.tsx (mode selection)
+- src/app/math/multiplication/page.tsx (mode selection)
+- src/components/dashboard/ModuleBreakdown.tsx (customizable)
+- src/components/dashboard/RecentSessions.tsx (mode badges)
+- src/app/progress/page.tsx (split Study/Test sections)
+```
+
+### Database Changes
+- **Migration Applied:** January 15, 2026
+- **Table:** sessions
+- **Column Added:** mode TEXT NOT NULL DEFAULT 'study' CHECK (mode IN ('study', 'test'))
+- **Index Added:** idx_sessions_mode
+- **Backward Compatibility:** Existing sessions default to 'study'
+
+### User-Facing Changes
+1. **Mode Selection:** After choosing math operation (Addition/Subtraction/Multiplication), users now select Study Mode or Test Mode
+2. **Test Mode Flow:**
+   - Select number 1-9 (becomes fixed operand)
+   - Complete 16 problems in 2x8 grid layout
+   - Fixed operand always appears as second number (e.g., "8-5", "3+5", "2×5")
+   - Timer runs continuously (no pause)
+   - Results screen shows score, percentage, and time (no celebration video)
+3. **Study Mode:** Preserved existing 25-question gamified experience with image reveal and celebration
+4. **Progress Dashboard:**
+   - "Study Mode" section (green bars) for study sessions
+   - "Test Mode" section (blue bars) for test sessions
+   - Recent sessions show mode badges
+
+### Testing
+- TypeScript compilation: ✅ Passing
+- Test suite: ✅ 107 tests passing
+- Manual testing: ✅ All operations verified
+- Production deployment: ✅ Successful
+
+### Technical Notes
+- Test Mode sessions are logged to database with `mode: 'test'`
+- Currently NOT counted toward goals (reserved for future enhancement)
+- Problem generators ensure unique problems (no duplicates)
+- Grid layout matches homework format per PRD requirements
+- Keyboard navigation supported (Tab, Enter, Arrow keys)
+
+### Future Enhancements (Not Implemented)
+- Goal integration for Test Mode
+- Performance analytics by fixed operand
+- Printable worksheet generation
+- Timed test variants
+- Custom test length options
+
+---
+
 ## 2026-01-08 - Initial Vercel Deployment
 
 ### Issue 1: ESLint Error - Unused Import
