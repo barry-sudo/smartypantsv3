@@ -14,7 +14,8 @@ export default function ProgressDashboard() {
     totalSessions,
     sessionsThisWeek,
     averageAccuracy,
-    moduleBreakdown,
+    studyModuleBreakdown,
+    testModuleBreakdown,
     recentSessions,
     goalProgress,
     isLoading,
@@ -80,11 +81,22 @@ export default function ProgressDashboard() {
           averageAccuracy={averageAccuracy}
         />
 
-        {/* Two column layout for breakdown and recent */}
+        {/* Study and Test Mode Breakdowns */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <ModuleBreakdown breakdown={moduleBreakdown} />
-          <RecentSessions sessions={recentSessions} />
+          <ModuleBreakdown
+            breakdown={studyModuleBreakdown}
+            title="Study Mode"
+            barColor="bg-green-500"
+          />
+          <ModuleBreakdown
+            breakdown={testModuleBreakdown}
+            title="Test Mode"
+            barColor="bg-blue-500"
+          />
         </div>
+
+        {/* Recent Sessions */}
+        <RecentSessions sessions={recentSessions} />
       </div>
     </main>
   );

@@ -6,6 +6,7 @@ import {
   calculateAverageAccuracy,
   getSessionsThisWeek,
   calculateModuleBreakdown,
+  calculateModuleBreakdownByMode,
   type ModuleStats,
 } from '@/lib/analytics/calculations';
 import type { Session, GoalProgress } from '@/types';
@@ -15,6 +16,8 @@ export interface StatsData {
   sessionsThisWeek: number;
   averageAccuracy: number;
   moduleBreakdown: ModuleStats[];
+  studyModuleBreakdown: ModuleStats[];
+  testModuleBreakdown: ModuleStats[];
   recentSessions: Session[];
   goalProgress: GoalProgress | null;
   isLoading: boolean;
@@ -81,11 +84,17 @@ export function useStats(userId: string): StatsData {
   const averageAccuracy = calculateAverageAccuracy(sessions);
   const moduleBreakdown = calculateModuleBreakdown(sessions);
 
+  // Calculate mode-specific breakdowns
+  const studyModuleBreakdown = calculateModuleBreakdownByMode(sessions, 'study');
+  const testModuleBreakdown = calculateModuleBreakdownByMode(sessions, 'test');
+
   return {
     totalSessions,
     sessionsThisWeek,
     averageAccuracy,
     moduleBreakdown,
+    studyModuleBreakdown,
+    testModuleBreakdown,
     recentSessions,
     goalProgress,
     isLoading,

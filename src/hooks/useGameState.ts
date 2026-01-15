@@ -8,6 +8,7 @@ import type { Session, GameModule } from '@/types';
 interface UseGameStateOptions {
   module: GameModule;
   userId: string;
+  mode?: 'study' | 'test';
 }
 
 interface UseGameStateReturn {
@@ -24,7 +25,7 @@ interface UseGameStateReturn {
   completeSession: (durationSeconds: number) => Promise<void>;
 }
 
-export function useGameState({ module, userId }: UseGameStateOptions): UseGameStateReturn {
+export function useGameState({ module, userId, mode = 'study' }: UseGameStateOptions): UseGameStateReturn {
   const [session, setSession] = useState<Session | null>(null);
   const [correctCount, setCorrectCount] = useState(0);
   const [totalAttempts, setTotalAttempts] = useState(0);
@@ -33,12 +34,12 @@ export function useGameState({ module, userId }: UseGameStateOptions): UseGameSt
   // Create session on mount
   useEffect(() => {
     if (userId) {
-      createSession(userId, module).then(newSession => {
+      createSession(userId, module, mode).then(newSession => {
         setSession(newSession);
         setIsLoading(false);
       });
     }
-  }, [userId, module]);
+  }, [userId, module, mode]);
 
   // Submit answer attempt
   const submitAnswer = async (

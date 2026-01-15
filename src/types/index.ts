@@ -12,6 +12,7 @@ export interface Session {
   id: string;
   user_id: string;
   module: GameModule;
+  mode: 'study' | 'test';
   started_at: string;
   completed_at: string | null;
   duration_seconds: number;

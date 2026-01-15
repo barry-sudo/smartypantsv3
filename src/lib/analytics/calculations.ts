@@ -119,3 +119,45 @@ export function calculateSessionAccuracy(session: Session): number {
   if (session.total_attempts === 0) return 0;
   return Math.round((session.correct_count / session.total_attempts) * 100);
 }
+
+/**
+ * Calculate module breakdown filtered by mode (study or test)
+ * @param sessions - Array of sessions
+ * @param mode - Mode to filter by ('study' or 'test')
+ * @returns Array of module statistics for the specified mode
+ */
+export function calculateModuleBreakdownByMode(
+  sessions: Session[],
+  mode: 'study' | 'test'
+): ModuleStats[] {
+  const modeSessions = sessions.filter(s => s.mode === mode);
+  return calculateModuleBreakdown(modeSessions);
+}
+
+/**
+ * Get sessions this week filtered by mode
+ * @param sessions - Array of sessions
+ * @param mode - Mode to filter by ('study' or 'test')
+ * @returns Number of sessions for the mode completed this week
+ */
+export function getSessionsThisWeekByMode(
+  sessions: Session[],
+  mode: 'study' | 'test'
+): number {
+  const modeSessions = sessions.filter(s => s.mode === mode);
+  return getSessionsThisWeek(modeSessions);
+}
+
+/**
+ * Calculate average accuracy for a specific mode
+ * @param sessions - Array of sessions
+ * @param mode - Mode to filter by ('study' or 'test')
+ * @returns Average accuracy for the mode
+ */
+export function calculateAverageAccuracyByMode(
+  sessions: Session[],
+  mode: 'study' | 'test'
+): number {
+  const modeSessions = sessions.filter(s => s.mode === mode);
+  return calculateAverageAccuracy(modeSessions);
+}

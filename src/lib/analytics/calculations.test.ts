@@ -15,6 +15,7 @@ function createSession(overrides: Partial<Session> = {}): Session {
     id: 'test-id',
     user_id: 'user-1',
     module: 'addition',
+    mode: 'study',
     started_at: '2025-01-01T10:00:00Z',
     completed_at: '2025-01-01T10:05:00Z',
     duration_seconds: 300,

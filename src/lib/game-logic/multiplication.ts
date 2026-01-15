@@ -26,3 +26,42 @@ export function generateMultiplicationProblem(): Problem {
     operation: 'multiplication'
   };
 }
+
+/**
+ * Generates 16 unique multiplication problems for Test Mode.
+ * Fixed operand is always the second factor.
+ *
+ * @param fixedOperand - The second factor (1-9)
+ * @returns Array of 16 unique multiplication problems
+ *
+ * @example
+ * generateMultiplicationTestModeProblems(5) => [
+ *   { num1: 1, num2: 5, answer: 5, operation: 'multiplication' },
+ *   { num1: 2, num2: 5, answer: 10, operation: 'multiplication' },
+ *   ...
+ * ]
+ */
+export function generateMultiplicationTestModeProblems(
+  fixedOperand: number
+): Problem[] {
+  const problems: Problem[] = [];
+  const used = new Set<number>();
+
+  // Generate 16 unique problems
+  // First factor ranges from 1 to 20
+  while (problems.length < 16) {
+    const num1 = Math.floor(Math.random() * 20) + 1;
+
+    if (!used.has(num1)) {
+      problems.push({
+        num1,
+        num2: fixedOperand,
+        answer: num1 * fixedOperand,
+        operation: 'multiplication'
+      });
+      used.add(num1);
+    }
+  }
+
+  return problems;
+}

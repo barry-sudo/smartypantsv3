@@ -3,13 +3,15 @@ import type { Session, GameModule } from '@/types';
 
 export async function createSession(
   userId: string,
-  module: GameModule
+  module: GameModule,
+  mode: 'study' | 'test' = 'study'
 ): Promise<Session | null> {
   const { data, error } = await supabase
     .from('sessions')
     .insert({
       user_id: userId,
       module,
+      mode,
       started_at: new Date().toISOString()
     })
     .select()

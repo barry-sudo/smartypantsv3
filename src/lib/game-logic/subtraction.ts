@@ -26,3 +26,44 @@ export function generateSubtractionProblem(): Problem {
     operation: 'subtraction'
   };
 }
+
+/**
+ * Generates 16 unique subtraction problems for Test Mode.
+ * Fixed operand is always the subtrahend (second number).
+ * Ensures positive answers (including zero).
+ *
+ * @param fixedOperand - The subtrahend (1-9)
+ * @returns Array of 16 unique subtraction problems
+ *
+ * @example
+ * generateSubtractionTestModeProblems(5) => [
+ *   { num1: 8, num2: 5, answer: 3, operation: 'subtraction' },
+ *   { num1: 10, num2: 5, answer: 5, operation: 'subtraction' },
+ *   ...
+ * ]
+ */
+export function generateSubtractionTestModeProblems(
+  fixedOperand: number
+): Problem[] {
+  const problems: Problem[] = [];
+  const used = new Set<number>();
+
+  // Generate 16 unique problems
+  while (problems.length < 16) {
+    // Random minuend from fixedOperand to 20
+    const num1 = Math.floor(Math.random() * (21 - fixedOperand)) + fixedOperand;
+
+    // Check if we've already used this minuend
+    if (!used.has(num1)) {
+      problems.push({
+        num1,
+        num2: fixedOperand,
+        answer: num1 - fixedOperand,
+        operation: 'subtraction'
+      });
+      used.add(num1);
+    }
+  }
+
+  return problems;
+}

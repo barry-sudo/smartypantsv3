@@ -18,6 +18,7 @@ describe('useGameState', () => {
     id: 'session-123',
     user_id: 'user-123',
     module: 'subtraction' as const,
+    mode: 'study' as const,
     started_at: '2025-01-01T00:00:00Z',
     completed_at: null,
     duration_seconds: 0,
@@ -45,7 +46,7 @@ describe('useGameState', () => {
       expect(result.current.isLoading).toBe(false);
     });
 
-    expect(sessionsModule.createSession).toHaveBeenCalledWith('user-123', 'subtraction');
+    expect(sessionsModule.createSession).toHaveBeenCalledWith('user-123', 'subtraction', 'study');
     expect(result.current.session).toEqual(mockSession);
   });
 
