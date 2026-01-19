@@ -45,22 +45,21 @@ export function generateMultiplicationTestModeProblems(
   fixedOperand: number
 ): Problem[] {
   const problems: Problem[] = [];
-  const used = new Set<number>();
 
-  // Generate 16 unique problems
-  // First factor ranges from 1 to 20
-  while (problems.length < 16) {
-    const num1 = Math.floor(Math.random() * 20) + 1;
+  // Generate 16 problems (duplicates allowed to maintain range constraints)
+  // Architectural principle: Range control > uniqueness
+  // First factor ranges from 1 to 20 for times tables practice
+  const maxFirstFactor = 20;
 
-    if (!used.has(num1)) {
-      problems.push({
-        num1,
-        num2: fixedOperand,
-        answer: num1 * fixedOperand,
-        operation: 'multiplication'
-      });
-      used.add(num1);
-    }
+  for (let i = 0; i < 16; i++) {
+    const num1 = Math.floor(Math.random() * maxFirstFactor) + 1;
+
+    problems.push({
+      num1,
+      num2: fixedOperand,
+      answer: num1 * fixedOperand,
+      operation: 'multiplication'
+    });
   }
 
   return problems;

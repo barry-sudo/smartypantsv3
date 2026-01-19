@@ -46,24 +46,21 @@ export function generateAdditionTestModeProblems(
   fixedOperand: number
 ): Problem[] {
   const problems: Problem[] = [];
-  const used = new Set<number>();
 
-  // Generate 16 unique problems
-  // First addend ranges from 1 to (20 - fixedOperand) to keep sums ≤ 20
-  const maxFirstOperand = Math.min(20 - fixedOperand, 20);
+  // Generate 16 problems (duplicates allowed to maintain range constraints)
+  // Architectural principle: Range control > uniqueness
+  // Keeps sums ≤ 20 for narrow-range pedagogy (e.g., drilling single-digit facts)
+  const maxFirstOperand = Math.max(1, 20 - fixedOperand);
 
-  while (problems.length < 16) {
+  for (let i = 0; i < 16; i++) {
     const num1 = Math.floor(Math.random() * maxFirstOperand) + 1;
 
-    if (!used.has(num1)) {
-      problems.push({
-        num1,
-        num2: fixedOperand,
-        answer: num1 + fixedOperand,
-        operation: 'addition'
-      });
-      used.add(num1);
-    }
+    problems.push({
+      num1,
+      num2: fixedOperand,
+      answer: num1 + fixedOperand,
+      operation: 'addition'
+    });
   }
 
   return problems;

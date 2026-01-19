@@ -46,23 +46,21 @@ export function generateSubtractionTestModeProblems(
   fixedOperand: number
 ): Problem[] {
   const problems: Problem[] = [];
-  const used = new Set<number>();
 
-  // Generate 16 unique problems
-  while (problems.length < 16) {
-    // Random minuend from fixedOperand to 20
-    const num1 = Math.floor(Math.random() * (21 - fixedOperand)) + fixedOperand;
+  // Generate 16 problems (duplicates allowed to maintain range constraints)
+  // Architectural principle: Range control > uniqueness
+  // Minuend ranges from fixedOperand to 20 to ensure non-negative results
+  const maxMinuend = 20;
 
-    // Check if we've already used this minuend
-    if (!used.has(num1)) {
-      problems.push({
-        num1,
-        num2: fixedOperand,
-        answer: num1 - fixedOperand,
-        operation: 'subtraction'
-      });
-      used.add(num1);
-    }
+  for (let i = 0; i < 16; i++) {
+    const num1 = Math.floor(Math.random() * (maxMinuend - fixedOperand + 1)) + fixedOperand;
+
+    problems.push({
+      num1,
+      num2: fixedOperand,
+      answer: num1 - fixedOperand,
+      operation: 'subtraction'
+    });
   }
 
   return problems;
