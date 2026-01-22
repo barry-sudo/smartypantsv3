@@ -12,7 +12,13 @@
       "Bash(pkill:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(tree:*)",
+      "Bash(if [ -f \".env.example\" ])",
+      "Bash(then echo \"=== .env.example contents ===\")",
+      "Bash(else echo \"No .env.example file found\")",
+      "Bash(fi)",
+      "Bash(git diff:*)"
     ]
   }
 }
