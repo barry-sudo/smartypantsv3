@@ -1,42 +1,12 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
-import { GoalForm } from '@/components/admin/GoalForm';
-import { GoalList } from '@/components/admin/GoalList';
-import { getAllGoals } from '@/lib/supabase/queries/goals';
-import type { Goal } from '@/types';
 
 export default function AdminPanel() {
   const { user } = useAuth();
   const { logout } = useAdminAuth();
-  const [goals, setGoals] = useState<Goal[]>([]);
-  const [showForm, setShowForm] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const fetchGoals = useCallback(async () => {
-    if (!user?.id) return;
-
-    setIsLoading(true);
-    const data = await getAllGoals(user.id);
-    setGoals(data);
-    setIsLoading(false);
-  }, [user?.id]);
-
-  useEffect(() => {
-    fetchGoals();
-  }, [fetchGoals]);
-
-  const handleGoalCreated = (): void => {
-    setShowForm(false);
-    fetchGoals();
-  };
-
-  const handleLogout = (): void => {
-    logout();
-  };
 
   if (!user) {
     return (
@@ -48,63 +18,72 @@ export default function AdminPanel() {
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-jungle-dark via-jungle to-jungle-light p-8">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <Link
             href="/"
-            className="text-white hover:text-orange transition-colors font-medium"
+            className="text-white hover:text-orange transition-colors font-medium text-lg"
           >
             ← Back to Home
           </Link>
           <button
-            onClick={handleLogout}
+            onClick={logout}
             className="text-white/70 hover:text-white transition-colors text-sm"
           >
             Logout
           </button>
         </div>
 
-        {/* Main Card */}
-        <div className="bg-white rounded-2xl p-8 border-4 border-orange shadow-xl">
-          <div className="flex items-center justify-between mb-8">
-            <h1 className="text-4xl font-bold text-jungle">Goal Management</h1>
-            {!showForm && (
-              <button
-                onClick={() => setShowForm(true)}
-                className="px-6 py-3 bg-gradient-to-b from-orange to-orange-dark text-white rounded-xl font-bold text-lg hover:scale-105 transition-transform active:scale-95"
+        {/* Page Title */}
+        <h1 className="text-5xl font-bold text-white text-center mb-12">
+          Admin Panel
+        </h1>
+
+        {/* Module Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          {/* Goal Management Module */}
+          <div className="bg-white rounded-2xl p-8 border-4 border-orange shadow-xl">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-3xl font-bold text-jungle">
+                Goal Management
+              </h2>
+              <Link
+                href="/admin/goals"
+                className="px-4 py-2 bg-gradient-to-b from-orange to-orange-dark text-white rounded-lg font-bold hover:scale-105 transition-transform active:scale-95"
               >
-                + New Goal
-              </button>
-            )}
+                View Goals
+              </Link>
+            </div>
+            <p className="text-gray-600 leading-relaxed">
+              Create and manage reward goals. Track your child&apos;s progress toward prizes.
+              Only one goal can be active at a time.
+            </p>
           </div>
 
-          {/* Goal Form */}
-          {showForm && (
-            <GoalForm
-              userId={user.id}
-              onComplete={handleGoalCreated}
-              onCancel={() => setShowForm(false)}
-            />
-          )}
-
-          {/* Loading State */}
-          {isLoading ? (
-            <div className="text-center text-gray-500 py-8">
-              Loading goals...
+          {/* Spelling Words Module - Coming Soon */}
+          <div className="bg-white rounded-2xl p-8 border-4 border-gray-300 shadow-xl opacity-75">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-3xl font-bold text-gray-500">
+                Add Spelling Words
+              </h2>
+              <button
+                disabled
+                className="px-4 py-2 bg-gray-300 text-gray-500 rounded-lg font-bold cursor-not-allowed"
+              >
+                Coming Soon
+              </button>
             </div>
-          ) : (
-            <GoalList goals={goals} onUpdate={fetchGoals} />
-          )}
+            <p className="text-gray-500 leading-relaxed">
+              Manage the spelling word list for practice sessions. Add, edit, or remove words.
+            </p>
+          </div>
         </div>
 
         {/* Help Text */}
-        <div className="mt-6 text-white/70 text-sm text-center">
+        <div className="mt-12 text-white/70 text-sm text-center max-w-2xl mx-auto">
           <p>
-            Goals track your child&apos;s progress. Only one goal can be active at a time.
-          </p>
-          <p className="mt-1">
-            To set a prize image, upload to Supabase Storage: <code className="bg-white/20 px-1 rounded">prizes/current-goal.jpg</code>
+            Use the Admin Panel to manage goals, content, and settings for Smarty Pants.
           </p>
         </div>
       </div>
