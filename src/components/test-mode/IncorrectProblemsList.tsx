@@ -49,43 +49,43 @@ export default function IncorrectProblemsList({
   const symbol = getOperationSymbol(operation);
 
   return (
-    <div className="flex flex-col gap-4">
-      <h3 className="text-lg font-bold text-jungle-dark text-center mb-2">
-        Review Your Mistakes
+    <div className="flex flex-col gap-4 -mt-8">
+      <h3 className="text-xl font-bold text-white text-center mb-3">
+        Incorrect Answers
       </h3>
       <div className="grid grid-cols-2 gap-4">
         {incorrectProblems.map(({ problem, userAnswer, index }) => (
           <div
             key={index}
-            className="bg-white rounded-lg p-4 shadow-md border-2 border-jungle"
+            className="bg-white rounded-lg p-6 shadow-md border-2 border-jungle"
           >
             {/* Problem Display */}
-            <div className="text-center mb-3">
-              <div className="text-2xl font-bold text-jungle-dark">
+            <div className="text-center mb-4">
+              <div className="text-3xl font-bold text-jungle-dark">
                 {problem.num1}
               </div>
-              <div className="text-2xl font-bold text-jungle-dark">
+              <div className="text-3xl font-bold text-jungle-dark">
                 {symbol} {problem.num2}
               </div>
-              <div className="border-t-2 border-jungle-dark mt-1 mb-2"></div>
+              <div className="border-t-2 border-jungle-dark mt-2 mb-3"></div>
             </div>
 
             {/* Answers Comparison */}
             <div className="grid grid-cols-2 gap-2 text-center">
               {/* User's Answer */}
               <div>
-                <div className="text-sm text-gray-600 mb-1">Your answer</div>
-                <div className="text-xl font-bold text-red-600 bg-red-50 rounded p-2">
+                <div className="text-base text-gray-600 mb-1">Your answer</div>
+                <div className="text-2xl font-bold text-red-600 bg-red-50 rounded p-3">
                   {userAnswer || '—'}
                 </div>
               </div>
 
               {/* Correct Answer */}
               <div>
-                <div className="text-sm font-bold mb-1" style={{ color: '#d4af37' }}>
+                <div className="text-base font-bold mb-1" style={{ color: '#FFD700' }}>
                   Correct answer
                 </div>
-                <div className="text-xl font-bold bg-green-50 rounded p-2" style={{ color: '#d4af37' }}>
+                <div className="text-2xl font-bold bg-green-50 rounded p-3" style={{ color: '#FFD700' }}>
                   {problem.answer}
                 </div>
               </div>
