@@ -67,3 +67,35 @@ export interface Problem {
   answer: number;
   operation: 'addition' | 'subtraction' | 'multiplication';
 }
+
+export interface SpellingWord {
+  id: string;
+  word: string;
+  audio_path: string;
+  audio_verified: boolean;
+  grade_level: number | null;
+  difficulty: 'easy' | 'medium' | 'hard' | null;
+  notes: string | null;
+  active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateSpellingWordData {
+  word: string;
+  audio_path: string;
+  audio_verified?: boolean;
+  grade_level?: number | null;
+  difficulty?: 'easy' | 'medium' | 'hard' | null;
+  notes?: string | null;
+}
+
+export interface UpdateSpellingWordData {
+  word?: string;
+  audio_path?: string;
+  audio_verified?: boolean;
+  grade_level?: number | null;
+  difficulty?: 'easy' | 'medium' | 'hard' | null;
+  notes?: string | null;
+  active?: boolean;
+}

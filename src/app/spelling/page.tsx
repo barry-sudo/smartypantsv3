@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { useGameState } from '@/hooks/useGameState';
 import { useTimer } from '@/hooks/useTimer';
-import { selectRandomWord } from '@/lib/game-logic/spelling';
+import { getActiveWords, selectRandomWord } from '@/lib/game-logic/spelling';
 import { ImageReveal } from '@/components/game/ImageReveal';
 import { Timer } from '@/components/game/Timer';
 import { Counter } from '@/components/game/Counter';
@@ -21,6 +21,8 @@ export default function SpellingGame() {
     userId: user?.id || ''
   });
 
+  const [availableWords, setAvailableWords] = useState<string[]>([]);
+  const [isLoadingWords, setIsLoadingWords] = useState(true);
   const [currentWord, setCurrentWord] = useState<string | null>(null);
   const [usedWords, setUsedWords] = useState<string[]>([]);
   const [attemptNumber, setAttemptNumber] = useState(1);
@@ -40,11 +42,28 @@ export default function SpellingGame() {
     ASSETS.videos[Math.floor(Math.random() * ASSETS.videos.length)]
   );
 
-  // Select first word and play audio
+  // Fetch words from database on mount
   useEffect(() => {
-    const word = selectRandomWord(usedWords);
-    setCurrentWord(word);
-    playWordAudio(word);
+    async function loadWords() {
+      setIsLoadingWords(true);
+      try {
+        const words = await getActiveWords();
+        setAvailableWords(words);
+
+        // Initialize first word
+        if (words.length > 0) {
+          const firstWord = selectRandomWord(words, []);
+          setCurrentWord(firstWord);
+          playWordAudio(firstWord);
+        }
+      } catch (error) {
+        console.error('Error loading words:', error);
+      } finally {
+        setIsLoadingWords(false);
+      }
+    }
+
+    loadWords();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -101,17 +120,19 @@ export default function SpellingGame() {
       // Load next word
       const newUsedWords = [...usedWords, currentWord!];
       setUsedWords(newUsedWords);
-      const nextWord = selectRandomWord(newUsedWords);
+      const nextWord = selectRandomWord(availableWords, newUsedWords);
       setCurrentWord(nextWord);
       playWordAudio(nextWord);
       setAttemptNumber(1);
     }
   };
 
-  if (isLoading || !user) {
+  if (isLoading || !user || isLoadingWords) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-jungle-dark via-jungle to-jungle-light flex items-center justify-center">
-        <div className="text-4xl font-bold text-white">Loading...</div>
+        <div className="text-4xl font-bold text-white">
+          {isLoadingWords ? 'Loading words...' : 'Loading...'}
+        </div>
       </div>
     );
   }

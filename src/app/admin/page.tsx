@@ -61,21 +61,21 @@ export default function AdminPanel() {
             </p>
           </div>
 
-          {/* Spelling Words Module - Coming Soon */}
-          <div className="bg-white rounded-2xl p-8 border-4 border-gray-300 shadow-xl opacity-75">
+          {/* Spelling Words Module */}
+          <div className="bg-white rounded-2xl p-8 border-4 border-orange shadow-xl">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-3xl font-bold text-gray-500">
-                Add Spelling Words
+              <h2 className="text-3xl font-bold text-jungle">
+                Spelling Words
               </h2>
-              <button
-                disabled
-                className="px-4 py-2 bg-gray-300 text-gray-500 rounded-lg font-bold cursor-not-allowed"
+              <Link
+                href="/admin/spelling"
+                className="px-4 py-2 bg-gradient-to-b from-orange to-orange-dark text-white rounded-lg font-bold hover:scale-105 transition-transform active:scale-95"
               >
-                Coming Soon
-              </button>
+                Manage Words
+              </Link>
             </div>
-            <p className="text-gray-500 leading-relaxed">
-              Manage the spelling word list for practice sessions. Add, edit, or remove words.
+            <p className="text-gray-600 leading-relaxed">
+              Manage the spelling word list for practice sessions. Add, edit, or remove words with audio files.
             </p>
           </div>
         </div>
