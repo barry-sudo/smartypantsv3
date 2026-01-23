@@ -22,6 +22,7 @@ export default function AdditionTestPage() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [correctCount, setCorrectCount] = useState(0);
   const [finalTime, setFinalTime] = useState(0);
+  const [userAnswersState, setUserAnswersState] = useState<string[]>([]);
 
   if (!user) {
     return (
@@ -49,6 +50,7 @@ export default function AdditionTestPage() {
     setIsTimerActive(false);
     setCorrectCount(correct);
     setFinalTime(seconds);
+    setUserAnswersState(answers); // Store answers for completion display
 
     // Log all attempts to database
     if (sessionId) {
@@ -100,6 +102,8 @@ export default function AdditionTestPage() {
         totalQuestions={16}
         timeInSeconds={finalTime}
         operation="addition"
+        problems={problems}
+        userAnswers={userAnswersState}
       />
     );
   }
